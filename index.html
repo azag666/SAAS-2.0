@@ -219,14 +219,18 @@
             transactions() {
                 return `
                 <div class="animate-fade-in">
-                    <h1 class="text-3xl font-bold text-white mb-6">Transações Recentes</h1>
-                    <div class="card p-6 rounded-lg">
-                        <div class="flex justify-end mb-4">
-                             <button id="refreshTransactionsBtn" class="btn text-sm py-2 px-3">
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-3xl font-bold text-white">Transações Recentes</h1>
+                        <div class="flex items-center space-x-4">
+                            <input type="date" id="startDateTrans" class="form-input p-2 rounded-md">
+                            <input type="date" id="endDateTrans" class="form-input p-2 rounded-md">
+                            <button id="refreshTransactionsBtn" class="btn text-sm py-2 px-3">
                                 <svg class="h-4 w-4 inline-block mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001m0 0h-4.992m4.992 0L21 9.348M16.023 9.348A10.038 10.038 0 0112 19.5 10.038 10.038 0 012.98 9.348" /></svg>
                                 Atualizar
                             </button>
                         </div>
+                    </div>
+                    <div class="card p-6 rounded-lg">
                         <div class="overflow-x-auto">
                             <table class="table-custom w-full text-sm">
                                 <thead>
@@ -478,6 +482,7 @@
                 if (e.target.id === 'logoutButton') this.logout();
                 if (e.target.id === 'closeModalBtn') document.getElementById('modal-container').innerHTML = '';
                 if (e.target.id === 'refreshDashboardBtn') this.fetchDashboardMetrics();
+                if (e.target.id === 'refreshTransactionsBtn') this.fetchTransactions();
                 
                 const sidebarLink = e.target.closest('.nav-link');
                 if (sidebarLink) this.navigateTo(sidebarLink.dataset.target);
@@ -667,14 +672,24 @@
             if (contentContainer && this.templates[page]) {
                 contentContainer.innerHTML = this.templates[page]();
                 if (page === 'dashboard') {
+                    this.setupDateFilters();
                     this.fetchDashboardMetrics();
                 } else if (page === 'transactions') {
+                    this.setupDateFilters();
                     this.fetchTransactions();
                 }
                 document.querySelectorAll('.nav-link').forEach(item => {
                     item.classList.toggle('active', item.dataset.target === page);
                 });
             }
+        },
+        
+        setupDateFilters() {
+            const today = new Date().toISOString().split('T')[0];
+            const startDateEl = document.getElementById('startDate') || document.getElementById('startDateTrans');
+            const endDateEl = document.getElementById('endDate') || document.getElementById('endDateTrans');
+            if (startDateEl) startDateEl.value = today;
+            if (endDateEl) endDateEl.value = today;
         },
 
         async fetchDashboardMetrics() {
@@ -728,7 +743,14 @@
 
         async fetchTransactions() {
             try {
-                const transactions = await this.apiRequest('/api/transactions');
+                const startDate = document.getElementById('startDateTrans').value;
+                const endDate = document.getElementById('endDateTrans').value;
+                let endpoint = '/api/transactions';
+                if (startDate && endDate) {
+                    endpoint += `?startDate=${startDate}&endDate=${endDate}`;
+                }
+
+                const transactions = await this.apiRequest(endpoint);
                 const transactionsTableBody = document.getElementById('transactions-table');
                 
                 if (transactions && transactions.length > 0) {
