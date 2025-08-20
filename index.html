@@ -187,7 +187,7 @@
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-1 gap-8">
+                    <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
                         <div class="card p-6 rounded-lg">
                             <h2 class="text-xl font-semibold text-white mb-4">Desempenho por Bot</h2>
                             <div id="bots-performance-table-container" class="overflow-x-auto">
@@ -264,7 +264,7 @@
                 const botOptions = bots.map(b => `<option value="${b.id}">${b.bot_name}</option>`).join('');
                 const pixelCheckboxes = pixels.map(p => `<label class="flex items-center space-x-2 text-gray-400 hover:text-white cursor-pointer"><input type="checkbox" name="pixel_ids" value="${p.id}" class="h-4 w-4 bg-slate-700 border-slate-500 rounded text-sky-500 focus:ring-sky-500"><span>${p.account_name}</span></label>`).join('');
                 const presselList = pressels.map(pr => `
-                    <div class="card p-3 flex justify-between items-center text-sm">
+                    <div class="p-3 card flex justify-between items-center text-sm">
                         <div><p class="font-semibold">${pr.name}</p><p class="text-xs text-gray-400">Bot: ${pr.bot_name}</p></div>
                         <div class="space-x-2">
                            <button data-id="${pr.id}" class="generate-code-btn btn text-xs py-1 px-2">Ver Código</button>
