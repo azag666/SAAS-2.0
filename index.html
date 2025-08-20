@@ -81,7 +81,7 @@
         state: {
             API_BASE_URL: 'https://hottrack.vercel.app',
             token: null,
-            data: { pixels: [], bots: [], pressels: [], settings: {} },
+            data: { pixels: [], bots: [], pressels: [], checkouts: [], settings: {} },
             currentPage: 'dashboard'
         },
 
@@ -157,6 +157,12 @@
                                 Dashboard
                             </div>
                             <div data-target="pressels" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Criador de Pressel</div>
+                            <div data-target="checkouts" class="nav-link p-3 rounded-lg flex items-center gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.25m-11.25 0L6.375 17.25m11.25-3V14.25m0 0a3 3 0 01-3 3m3-3a3 3 0 00-3-3h-1.386c-.51 0-.955.343-1.087.835l-.383 1.437M7.5 14.25L5.625 17.25m-1.25 0A2.25 2.25 0 013 15v-5.25a2.25 2.25 0 012.25-2.25h14.5a2.25 2.25 0 012.25 2.25V15a2.25 2.25 0 01-2.25 2.25H16.5" />
+                                </svg>
+                                Gerenciar Checkouts
+                            </div>
                             <div data-target="pixels" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 12l4.179 2.25M6.429 9.75l5.571 3 5.571-3m0 0l4.179-2.25L12 5.25 7.821 7.5" /></svg>Gerenciar Pixels</div>
                             <div data-target="bots" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Gerenciar Bots</div>
                             <div data-target="transactions" class="nav-link p-3 rounded-lg flex items-center gap-3">
@@ -304,6 +310,78 @@
                         <div class="card p-6 rounded-lg">
                             <h2 class="text-xl font-bold mb-4 text-white">Pressels Criadas</h2>
                             <div id="pressel-list" class="space-y-3">${presselList.length ? presselList : '<p class="text-gray-500 text-sm">Nenhuma pressel criada.</p>'}</div>
+                        </div>
+                    </div>
+                </div>`;
+            },
+            checkouts() {
+                const { pixels, checkouts, settings } = App.state.data;
+                const pixelCheckboxes = pixels.map(p => `<label class="flex items-center space-x-2 text-gray-400 hover:text-white cursor-pointer"><input type="checkbox" name="pixel_ids" value="${p.id}" class="h-4 w-4 bg-slate-700 border-slate-500 rounded text-sky-500 focus:ring-sky-500"><span>${p.account_name}</span></label>`).join('');
+                
+                const checkoutList = checkouts.map(c => `
+                    <div class="p-3 card flex justify-between items-center text-sm">
+                        <div><p class="font-semibold">${c.name}</p><p class="text-xs text-gray-400">R$ ${c.value.toFixed(2).replace('.', ',')}</p></div>
+                        <div class="space-x-2">
+                           <button data-id="${c.id}" class="generate-checkout-code-btn btn text-xs py-1 px-2">Ver Código</button>
+                           <button data-id="${c.id}" class="delete-checkout-btn btn btn-red text-xs py-1 px-2">Excluir</button>
+                        </div>
+                    </div>`).join('');
+                
+                const isChecked = (provider) => (settings.active_pix_provider === provider) || (!settings.active_pix_provider && provider === 'pushinpay') ? 'checked' : '';
+
+                return `
+                <div class="animate-fade-in">
+                    <h1 class="text-3xl font-bold text-white mb-6">Criador de Checkout</h1>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="card p-6 rounded-lg">
+                            <h2 class="text-xl font-bold mb-4 text-white">Criar Novo Checkout</h2>
+                            <form id="checkoutForm" class="space-y-4">
+                                <input name="name" placeholder="Nome do Checkout (Ex: Ebook Mágico)" class="form-input w-full p-2 rounded-md" required>
+                                
+                                <div class="card p-3">
+                                    <h3 class="font-semibold mb-2">Provedor de PIX</h3>
+                                    <p class="text-xs text-gray-400 mb-2">O provedor deve estar configurado na página "API PIX".</p>
+                                    <div class="grid grid-cols-3 gap-2 provider-selector">
+                                        <input type="radio" id="ck_pushinpay" name="pix_provider" value="pushinpay" class="hidden" ${isChecked('pushinpay')}>
+                                        <label for="ck_pushinpay" class="card p-2 text-center cursor-pointer border-2 border-slate-700 hover:border-sky-500 transition-all duration-200"><h4 class="text-sm font-bold text-white">PushinPay</h4></label>
+                                        
+                                        <input type="radio" id="ck_cnpay" name="pix_provider" value="cnpay" class="hidden" ${isChecked('cnpay')}>
+                                        <label for="ck_cnpay" class="card p-2 text-center cursor-pointer border-2 border-slate-700 hover:border-sky-500 transition-all duration-200"><h4 class="text-sm font-bold text-white">CN Pay</h4></label>
+                                        
+                                        <input type="radio" id="ck_oasyfy" name="pix_provider" value="oasyfy" class="hidden" ${isChecked('oasyfy')}>
+                                        <label for="ck_oasyfy" class="card p-2 text-center cursor-pointer border-2 border-slate-700 hover:border-sky-500 transition-all duration-200"><h4 class="text-sm font-bold text-white">Oasy.fy</h4></label>
+                                    </div>
+                                </div>
+                                
+                                <label class="block"><span class="text-sm text-gray-400">Valor (Ex: 97.50)</span><input name="value" type="number" step="0.01" placeholder="97.50" class="form-input w-full p-2 rounded-md" required></label>
+
+                                <div class="card p-3">
+                                    <h3 class="font-semibold mb-2">Selecione o Template</h3>
+                                    <select name="template" class="form-select w-full p-2 rounded-md" required>
+                                        <option value="minimalist">Minimalista (Padrão)</option>
+                                        <option value="telegram">Estilo Conversa Telegram</option>
+                                        <option value="privacy">Estilo Privacy</option>
+                                        <option value="custom">Totalmente Personalizável</option>
+                                    </select>
+                                </div>
+
+                                <div id="custom-options" class="card p-3 space-y-4 hidden">
+                                    <p class="font-semibold mb-2 text-yellow-400">Opções do Checkout Personalizável</p>
+                                    <label class="block"><span class="text-sm text-gray-400">Cor de Fundo (Hex)</span><input name="bgColor" type="text" placeholder="#0a0a0a" class="form-input w-full p-2 rounded-md"></label>
+                                    <label class="block"><span class="text-sm text-gray-400">URL da Imagem de Fundo</span><input name="bgImage" type="url" placeholder="https://exemplo.com/fundo.jpg" class="form-input w-full p-2 rounded-md"></label>
+                                    <label class="block"><span class="text-sm text-gray-400">Título Principal</span><input name="title" type="text" placeholder="Adquira Agora!" class="form-input w-full p-2 rounded-md"></label>
+                                    <label class="block"><span class="text-sm text-gray-400">Subtítulo</span><input name="subtitle" type="text" placeholder="Pagamento seguro via PIX." class="form-input w-full p-2 rounded-md"></label>
+                                    <label class="block"><span class="text-sm text-gray-400">URL de Depoimento (Opcional)</span><input name="testimonialImage" type="url" placeholder="https://exemplo.com/depoimento.png" class="form-input w-full p-2 rounded-md"></label>
+                                </div>
+                                
+                                <div class="card p-3"><p class="font-semibold mb-2">Selecione os Pixels:</p><div class="space-y-2">${pixelCheckboxes.length ? pixelCheckboxes : '<p class="text-gray-500 text-sm">Cadastre um pixel primeiro.</p>'}</div></div>
+                                
+                                <button type="submit" class="btn w-full p-3 rounded-md text-base font-bold">Salvar e Gerar Código</button>
+                            </form>
+                        </div>
+                        <div class="card p-6 rounded-lg">
+                            <h2 class="text-xl font-bold mb-4 text-white">Checkouts Criados</h2>
+                            <div id="checkout-list" class="space-y-3">${checkoutList.length ? checkoutList : '<p class="text-gray-500 text-sm">Nenhum checkout criado.</p>'}</div>
                         </div>
                     </div>
                 </div>`;
@@ -463,6 +541,14 @@
                     </form>
                 `;
                 return this.modal(`Gerenciar Fluxo de @${bot.bot_name}`, modalContent);
+            },
+            checkoutCodeModal(checkout) {
+                const modalContent = `
+                    <textarea id="checkoutCode" readonly class="form-input w-full h-64 text-xs bg-slate-900/50"></textarea>
+                    <div class="mt-4 flex justify-end">
+                        <button id="copyCodeBtn" class="btn">Copiar Código</button>
+                    </div>`;
+                return this.modal('Código do Checkout Gerado', modalContent);
             }
         },
 
@@ -519,18 +605,25 @@
                     if (pressel) this.generatePresselCode(pressel);
                 }
 
+                if (e.target.classList.contains('generate-checkout-code-btn')) {
+                    const checkoutId = e.target.dataset.id;
+                    const checkout = this.state.data.checkouts.find(c => c.id == checkoutId);
+                    if (checkout) this.generateCheckoutCode(checkout);
+                }
+
                 if (e.target.classList.contains('manage-flow-btn')) {
                     const botId = e.target.dataset.id;
                     const bot = this.state.data.bots.find(b => b.id == botId);
                     if (bot) this.openBotFlowModal(bot);
                 }
 
-                if (e.target.classList.contains('delete-pixel-btn') || e.target.classList.contains('delete-bot-btn') || e.target.classList.contains('delete-pressel-btn')) {
+                if (e.target.classList.contains('delete-pixel-btn') || e.target.classList.contains('delete-bot-btn') || e.target.classList.contains('delete-pressel-btn') || e.target.classList.contains('delete-checkout-btn')) {
                     const id = e.target.dataset.id;
                     let type = '', endpoint = '';
                     if (e.target.classList.contains('delete-pixel-btn')) { type = 'pixels'; endpoint = 'pixels'; }
                     if (e.target.classList.contains('delete-bot-btn')) { type = 'bots'; endpoint = 'bots'; }
                     if (e.target.classList.contains('delete-pressel-btn')) { type = 'pressels'; endpoint = 'pressels'; }
+                    if (e.target.classList.contains('delete-checkout-btn')) { type = 'checkouts'; endpoint = 'checkouts'; }
 
                     if (confirm(`Tem certeza que deseja excluir este item?`)) {
                         try {
@@ -539,6 +632,19 @@
                             this.navigateTo(this.state.currentPage);
                             this.showToast('Item excluído com sucesso!', 'success');
                         } catch(err) {}
+                    }
+                }
+            });
+            
+            document.addEventListener('change', (e) => {
+                if(e.target.name === 'template') {
+                    const customOptions = document.getElementById('custom-options');
+                    if(e.target.value === 'custom') {
+                        customOptions.classList.remove('hidden');
+                        customOptions.querySelectorAll('input').forEach(input => input.required = true);
+                    } else {
+                        customOptions.classList.add('hidden');
+                        customOptions.querySelectorAll('input').forEach(input => input.required = false);
                     }
                 }
             });
@@ -582,6 +688,34 @@
                                 this.state.data.pressels.unshift(newPressel);
                                 this.navigateTo('pressels');
                                 this.generatePresselCode(newPressel);
+                            }
+                        }
+                    }
+                    else if (form.id === 'checkoutForm') {
+                        const pixel_ids = Array.from(form.querySelectorAll('input[name="pixel_ids"]:checked')).map(cb => cb.value);
+                        if (pixel_ids.length === 0) {
+                             this.showToast('Selecione ao menos um pixel.', 'error');
+                             shouldShowSuccess = false;
+                        } else {
+                            const payload = {
+                                name: data.name,
+                                pix_provider: data.pix_provider,
+                                value: parseFloat(data.value),
+                                template: data.template,
+                                pixel_ids,
+                                custom_options: data.template === 'custom' ? {
+                                    bgColor: data.bgColor,
+                                    bgImage: data.bgImage,
+                                    title: data.title,
+                                    subtitle: data.subtitle,
+                                    testimonialImage: data.testimonialImage
+                                } : null
+                            };
+                            const newCheckout = await this.apiRequest('/api/checkouts', 'POST', payload);
+                            if (newCheckout) {
+                                this.state.data.checkouts.unshift(newCheckout);
+                                this.navigateTo('checkouts');
+                                this.generateCheckoutCode(newCheckout);
                             }
                         }
                     }
@@ -772,7 +906,7 @@
         handleRedirect();
     <\/script>
     <script>
-        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src='https://connect.facebook.net/en_US/fbevents.js';s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script');
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src='https://connect.facebook.com/en_US/fbevents.js';s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script');
         PIXELS_TO_TRACK.forEach(p => { fbq('init', p.id); });
         fbq('track', 'PageView');
     <\/script>
@@ -788,6 +922,210 @@
                     <button id="copyCodeBtn" class="btn">Copiar Código</button>
                 </div>`;
             modalContainer.innerHTML = this.templates.modal('Código da Pressel Gerado', modalContent);
+        },
+
+        generateCheckoutCode(checkout) {
+            const { settings, pixels } = this.state.data;
+            const sellerApiKey = settings.api_key;
+            if (!sellerApiKey) {
+                return this.showToast("Erro: API Key do vendedor não encontrada. Tente recarregar a página.", 'error');
+            }
+            const selectedPixels = pixels.filter(p => (checkout.pixel_ids || []).some(id => id == p.id));
+            const pixelsToTrackString = JSON.stringify(selectedPixels.map(p => ({ id: p.pixel_id })), null, 2);
+            const noscriptPixelsString = selectedPixels.map(p => `<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${p.pixel_id}&ev=PageView&noscript=1"/>`).join('\\n    ');
+            
+            let checkoutHTML;
+            switch(checkout.template) {
+                case 'telegram':
+                    checkoutHTML = this.templates.checkoutTelegram(checkout);
+                    break;
+                case 'privacy':
+                    checkoutHTML = this.templates.checkoutPrivacy(checkout);
+                    break;
+                case 'custom':
+                    checkoutHTML = this.templates.checkoutCustom(checkout);
+                    break;
+                case 'minimalist':
+                default:
+                    checkoutHTML = this.templates.checkoutMinimalist(checkout);
+                    break;
+            }
+            
+            const fullCode = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${checkout.name}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #e2e8f0; }
+        .card { background-color: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.2); backdrop-filter: blur(12px); }
+        .btn { background-color: #0ea5e9; color: white; transition: all 0.3s ease; box-shadow: 0 0 10px rgba(14, 165, 233, 0.3); }
+        .btn:hover { background-color: #38bdf8; box-shadow: 0 0 20px rgba(56, 189, 248, 0.6); }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+    <script>
+        const API_BASE_URL = '${this.state.API_BASE_URL}';
+        const SELLER_API_KEY = '${sellerApiKey}';
+        const CHECKOUT_ID = ${checkout.id};
+        const PIX_VALUE = ${checkout.value};
+        const PIXELS_TO_TRACK = ${pixelsToTrackString};
+        
+        async function getPixCode() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const click_id = urlParams.get('click_id') || 'checkout_direct_' + new Date().getTime();
+                
+                const response = await fetch(\`\${API_BASE_URL}/api/pix/generate\`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': SELLER_API_KEY },
+                    body: JSON.stringify({ click_id, value_cents: Math.round(PIX_VALUE * 100), checkout_id: CHECKOUT_ID })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message);
+                
+                document.getElementById('pix-qr-code').src = 'data:image/png;base64,' + data.qr_code_base64;
+                document.getElementById('pix-copy-paste').value = data.qr_code_text;
+
+                // Enviar evento de ViewContent para a Meta
+                PIXELS_TO_TRACK.forEach(p => { fbq('track', 'ViewContent', { content_name: '${checkout.name}', content_category: 'Checkout', value: PIX_VALUE, currency: 'BRL' }); });
+
+                // Iniciar verificação de pagamento
+                checkPaymentStatus(click_id);
+            } catch (error) {
+                console.error("Erro ao gerar PIX:", error);
+                document.getElementById('payment-section').innerHTML = '<p class="text-red-400">Ocorreu um erro ao gerar o PIX. Por favor, recarregue a página.</p>';
+            }
+        }
+        
+        function checkPaymentStatus(clickId) {
+            const interval = setInterval(async () => {
+                try {
+                    const response = await fetch(\`\${API_BASE_URL}/api/pix/check-status\`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ click_id: clickId })
+                    });
+                    const data = await response.json();
+                    if (data.status === 'paid') {
+                        clearInterval(interval);
+                        document.getElementById('payment-section').innerHTML = '<p class="text-green-400 text-xl font-bold">Pagamento Aprovado! Redirecionando...</p>';
+                        PIXELS_TO_TRACK.forEach(p => { fbq('track', 'Purchase', { content_name: '${checkout.name}', content_category: 'Checkout', value: PIX_VALUE, currency: 'BRL' }); });
+                        setTimeout(() => { window.location.href = '${checkout.success_redirect_url || 'https://google.com'}'; }, 3000);
+                    }
+                } catch (error) { clearInterval(interval); console.error("Erro na verificação de status:", error); }
+            }, 5000);
+        }
+
+        window.onload = getPixCode;
+    </script>
+    <script>
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src='https://connect.facebook.com/en_US/fbevents.js';s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script');
+        PIXELS_TO_TRACK.forEach(p => { fbq('init', p.id); });
+        fbq('track', 'PageView');
+    </script>
+    <noscript>${noscriptPixelsString}</noscript>
+</head>
+<body>
+    ${checkoutHTML}
+</body>
+</html>`;
+
+            const modalContainer = document.getElementById('modal-container');
+            const encodedCode = fullCode.trim().replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            modalContainer.innerHTML = this.templates.checkoutCodeModal(checkout);
+            document.getElementById('checkoutCode').value = encodedCode;
+        },
+
+        templates: {
+            // ... (rest of the templates remain the same)
+            // Novo template para Checkout Minimalista
+            checkoutMinimalist(checkout) {
+                return `
+                <div class="flex items-center justify-center min-h-screen p-4">
+                    <div class="card p-8 rounded-lg w-full max-w-sm text-center animate-fade-in">
+                        <h1 class="text-2xl font-bold mb-2 text-white">Pagamento PIX</h1>
+                        <p class="text-sm text-gray-400 mb-4">Escaneie o QR Code para pagar R$ ${checkout.value.toFixed(2).replace('.', ',')}</p>
+                        <div class="flex justify-center mb-4">
+                            <img id="pix-qr-code" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E⏳%3C/text%3E%3C/svg%3E" alt="QR Code PIX" class="w-48 h-48 rounded-lg">
+                        </div>
+                        <input id="pix-copy-paste" type="text" readonly class="form-input w-full p-2 text-xs text-center rounded-md cursor-pointer" placeholder="Copia e cola do PIX">
+                        <p id="payment-status" class="mt-4 text-sm text-yellow-400">Aguardando pagamento...</p>
+                    </div>
+                </div>`;
+            },
+            // Novo template para Checkout Estilo Telegram
+            checkoutTelegram(checkout) {
+                return `
+                <div class="flex items-center justify-center min-h-screen p-4">
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-sm animate-fade-in">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl font-bold">Bot</div>
+                            <span class="text-lg font-bold text-white">${checkout.name}</span>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="bg-blue-600 text-white p-3 rounded-t-xl rounded-r-xl self-start max-w-[80%]">
+                                <p>Olá! Para finalizar sua compra, gere o PIX abaixo.</p>
+                            </div>
+                            <div class="bg-gray-700 p-4 rounded-xl self-end text-right">
+                                <p class="text-sm text-gray-300">Valor a pagar:</p>
+                                <p class="text-2xl font-bold text-white mb-2">R$ ${checkout.value.toFixed(2).replace('.', ',')}</p>
+                                <div class="flex justify-center mb-4">
+                                    <img id="pix-qr-code" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E⏳%3C/text%3E%3C/svg%3E" alt="QR Code PIX" class="w-48 h-48 rounded-lg">
+                                </div>
+                                <input id="pix-copy-paste" type="text" readonly class="form-input w-full p-2 text-xs text-center rounded-md cursor-pointer" placeholder="Copia e cola do PIX">
+                            </div>
+                        </div>
+                        <p id="payment-status" class="mt-4 text-sm text-yellow-400 text-center">Aguardando pagamento...</p>
+                    </div>
+                </div>`;
+            },
+            // Novo template para Checkout Estilo Privacy
+            checkoutPrivacy(checkout) {
+                return `
+                <div class="min-h-screen p-4 flex items-center justify-center" style="background-color: #0d121c;">
+                    <div class="bg-[#1a202c] rounded-2xl p-6 shadow-xl w-full max-w-md animate-fade-in">
+                        <div class="flex justify-center mb-4">
+                            <svg class="h-12 w-12 text-[#ff4081]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-1.897 14.868l-2.618-2.618a.99.99 0 010-1.401l.99-.99a.99.99 0 011.401 0l1.618 1.618 3.618-3.618a.99.99 0 011.401 0l.99.99a.99.99 0 010 1.401l-4.618 4.618a.99.99 0 01-1.401 0z"/></svg>
+                        </div>
+                        <h1 class="text-center text-3xl font-bold text-[#ff4081] mb-2">Pagamento Seguro</h1>
+                        <p class="text-center text-gray-300 mb-6">Conclua sua compra de R$ ${checkout.value.toFixed(2).replace('.', ',')}</p>
+                        
+                        <div class="bg-[#2d3748] p-4 rounded-xl text-center mb-6">
+                            <p class="text-sm font-semibold text-gray-400">QR Code PIX</p>
+                            <div class="flex justify-center my-4">
+                                <img id="pix-qr-code" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E⏳%3C/text%3E%3C/svg%3E" alt="QR Code PIX" class="w-56 h-56 rounded-lg">
+                            </div>
+                            <input id="pix-copy-paste" type="text" readonly class="form-input w-full p-2 text-xs text-center rounded-md cursor-pointer" placeholder="Copia e cola do PIX" style="background-color: #4a5568; border-color: #4a5568;">
+                        </div>
+                        <p id="payment-status" class="mt-4 text-sm text-yellow-400 text-center">Aguardando pagamento...</p>
+                    </div>
+                </div>`;
+            },
+            // Novo template para Checkout Personalizável
+            checkoutCustom(checkout) {
+                const { custom_options } = checkout;
+                const bgStyle = custom_options.bgImage ? `background-image: url('${custom_options.bgImage}'); background-size: cover; background-position: center;` : '';
+                const bgColorStyle = custom_options.bgColor ? `background-color: ${custom_options.bgColor};` : '';
+                return `
+                <div class="min-h-screen p-4 flex flex-col items-center justify-center" style="${bgStyle} ${bgColorStyle}">
+                    <div class="card p-8 rounded-lg w-full max-w-sm text-center animate-fade-in">
+                        <h1 class="text-3xl font-bold mb-2 text-white">${custom_options.title || 'Finalize sua Compra'}</h1>
+                        <p class="text-sm text-gray-400 mb-4">${custom_options.subtitle || 'Pagamento seguro via PIX'}</p>
+                        
+                        ${custom_options.testimonialImage ? `<img src="${custom_options.testimonialImage}" class="w-full rounded-lg mb-4">` : ''}
+
+                        <p class="text-sm text-gray-400">Valor a pagar:</p>
+                        <p class="text-4xl font-bold text-green-400 mb-4">R$ ${checkout.value.toFixed(2).replace('.', ',')}</p>
+                        
+                        <div class="flex justify-center mb-4">
+                            <img id="pix-qr-code" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E⏳%3C/text%3E%3C/svg%3E" alt="QR Code PIX" class="w-48 h-48 rounded-lg">
+                        </div>
+                        <input id="pix-copy-paste" type="text" readonly class="form-input w-full p-2 text-xs text-center rounded-md cursor-pointer" placeholder="Copia e cola do PIX">
+                        <p id="payment-status" class="mt-4 text-sm text-yellow-400">Aguardando pagamento...</p>
+                    </div>
+                </div>`;
+            }
         },
 
         showToast(message, type = 'success') {
