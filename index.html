@@ -693,13 +693,12 @@
             const today = new Date().toISOString().split('T')[0];
             const startDateEl = document.getElementById(page === 'dashboard' ? 'startDate' : 'startDateTrans');
             const endDateEl = document.getElementById(page === 'dashboard' ? 'endDate' : 'endDateTrans');
+            
             if (startDateEl) {
                 startDateEl.value = today;
-                startDateEl.addEventListener('change', () => this.fetchDashboardMetrics());
             }
             if (endDateEl) {
                 endDateEl.value = today;
-                endDateEl.addEventListener('change', () => this.fetchDashboardMetrics());
             }
         },
 
