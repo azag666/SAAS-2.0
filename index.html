@@ -55,6 +55,7 @@
         .provider-selector input:checked + label h3 {
             color: #7dd3fc;
         }
+        .table-custom th, .table-custom td { padding: 0.75rem; border-bottom: 1px solid #334155; text-align: left; }
     </style>
 </head>
 <body>
@@ -157,7 +158,7 @@
                 return `
                 <div class="animate-fade-in">
                     <h1 class="text-3xl font-bold text-white mb-6">Painel de Métricas</h1>
-                    <div id="dashboard-metrics" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
                         <div class="card p-6 rounded-lg text-center">
                             <h3 class="text-sm text-gray-400">Cliques na Página</h3>
                             <p id="metric-clicks" class="text-4xl font-bold text-sky-400 mt-2">...</p>
@@ -173,6 +174,40 @@
                         <div class="card p-6 rounded-lg text-center">
                             <h3 class="text-sm text-gray-400">Taxa de Conversão</h3>
                             <p id="metric-conversion" class="text-4xl font-bold text-purple-400 mt-2">...</p>
+                        </div>
+                        <div class="card p-6 rounded-lg text-center">
+                            <h3 class="text-sm text-gray-400">Conversão de PIX</h3>
+                            <p id="metric-pix-conversion" class="text-4xl font-bold text-teal-400 mt-2">...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="card p-6 rounded-lg">
+                            <h2 class="text-xl font-semibold text-white mb-4">Desempenho por Bot</h2>
+                            <div id="bots-performance-table-container" class="overflow-x-auto">
+                                <table class="table-custom w-full text-sm">
+                                    <thead><tr><th>Bot</th><th>Cliques</th><th>Vendas</th></tr></thead>
+                                    <tbody id="bots-performance-table"><tr><td colspan="3">Carregando...</td></tr></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card p-6 rounded-lg">
+                            <h2 class="text-xl font-semibold text-white mb-4">Desempenho por Pressel</h2>
+                            <div id="pressels-performance-table-container" class="overflow-x-auto">
+                                <table class="table-custom w-full text-sm">
+                                    <thead><tr><th>Pressel</th><th>Cliques</th><th>Vendas</th></tr></thead>
+                                    <tbody id="pressels-performance-table"><tr><td colspan="3">Carregando...</td></tr></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card p-6 rounded-lg md:col-span-2">
+                             <h2 class="text-xl font-semibold text-white mb-4">Vendas por Estado</h2>
+                            <div id="sales-by-state-table-container" class="overflow-x-auto">
+                                <table class="table-custom w-full text-sm">
+                                    <thead><tr><th>Estado</th><th>Vendas</th></tr></thead>
+                                    <tbody id="sales-by-state-table"><tr><td colspan="2">Carregando...</td></tr></tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>`;
@@ -607,13 +642,57 @@
         async fetchDashboardMetrics() {
             try {
                 const metrics = await this.apiRequest('/api/dashboard/metrics');
+                
+                // Atualiza os cards de métricas
                 document.getElementById('metric-clicks').textContent = metrics.total_clicks;
                 document.getElementById('metric-generated').textContent = metrics.total_pix_generated;
                 document.getElementById('metric-paid').textContent = metrics.total_pix_paid;
                 document.getElementById('metric-conversion').textContent = `${metrics.conversion_rate}%`;
+                document.getElementById('metric-pix-conversion').textContent = `${metrics.pix_conversion_rate}%`;
+
+                // Renderiza a tabela de desempenho por Bot
+                const botsTableBody = document.getElementById('bots-performance-table');
+                if (metrics.bots_performance.length > 0) {
+                    botsTableBody.innerHTML = metrics.bots_performance.map(b => `
+                        <tr class="hover:bg-slate-800/50">
+                            <td>${b.bot_name}</td>
+                            <td>${b.total_clicks}</td>
+                            <td>${b.total_pix_paid}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    botsTableBody.innerHTML = '<tr><td colspan="3" class="text-center text-gray-500">Nenhum dado de bot.</td></tr>';
+                }
+
+                // Renderiza a tabela de desempenho por Pressel
+                const presselsTableBody = document.getElementById('pressels-performance-table');
+                if (metrics.pressels_performance.length > 0) {
+                    presselsTableBody.innerHTML = metrics.pressels_performance.map(p => `
+                        <tr class="hover:bg-slate-800/50">
+                            <td>${p.pressel_name}</td>
+                            <td>${p.total_clicks}</td>
+                            <td>${p.total_pix_paid}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    presselsTableBody.innerHTML = '<tr><td colspan="3" class="text-center text-gray-500">Nenhum dado de pressel.</td></tr>';
+                }
+
+                // Renderiza a tabela de vendas por Estado
+                const salesTableBody = document.getElementById('sales-by-state-table');
+                if (metrics.sales_by_state.length > 0) {
+                    salesTableBody.innerHTML = metrics.sales_by_state.map(s => `
+                        <tr class="hover:bg-slate-800/50">
+                            <td>${s.state}</td>
+                            <td>${s.total_pix_paid}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    salesTableBody.innerHTML = '<tr><td colspan="2" class="text-center text-gray-500">Nenhuma venda registrada por estado.</td></tr>';
+                }
+                
             } catch (e) {
                 this.showToast("Não foi possível carregar as métricas do painel.", 'error');
-                document.getElementById('dashboard-metrics').innerHTML = '<p class="text-gray-500 text-center">Erro ao carregar os dados. Tente novamente mais tarde.</p>';
             }
         },
 
