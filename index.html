@@ -594,30 +594,21 @@
             const endDateEl = document.getElementById(page === 'dashboard' ? 'endDate' : 'endDateTrans');
             
             if (startDateEl && endDateEl) {
-                // Remove listeners antigos para evitar múltiplas chamadas
-                startDateEl.removeEventListener('change', this.onDateFilterChange);
-                endDateEl.removeEventListener('change', this.onDateFilterChange);
-
                 startDateEl.value = today;
                 endDateEl.value = today;
-                
-                // Adiciona novos listeners
-                startDateEl.addEventListener('change', () => {
-                    if (page === 'dashboard') { this.fetchDashboardMetrics(); } else { this.fetchTransactions(); }
-                });
-                endDateEl.addEventListener('change', () => {
-                    if (page === 'dashboard') { this.fetchDashboardMetrics(); } else { this.fetchTransactions(); }
-                });
             }
         },
 
         async fetchDashboardMetrics() {
             try {
-                const startDate = document.getElementById('startDate').value;
-                const endDate = document.getElementById('endDate').value;
+                const startDateEl = document.getElementById('startDate');
+                const endDateEl = document.getElementById('endDate');
                 
                 let endpoint = '/api/dashboard/metrics';
-                // Adiciona filtros apenas se ambos os campos estiverem preenchidos
+                const startDate = startDateEl.value;
+                const endDate = endDateEl.value;
+                
+                // Só adiciona o filtro se ambos os campos estiverem preenchidos
                 if (startDate && endDate) {
                     endpoint += `?startDate=${startDate}&endDate=${endDate}`;
                 }
@@ -667,7 +658,7 @@
                 const startDate = document.getElementById('startDateTrans').value;
                 const endDate = document.getElementById('endDateTrans').value;
                 let endpoint = '/api/transactions';
-                // Adiciona filtros apenas se ambos os campos estiverem preenchidos
+                
                 if (startDate && endDate) {
                     endpoint += `?startDate=${startDate}&endDate=${endDate}`;
                 }
