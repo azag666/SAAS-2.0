@@ -138,6 +138,10 @@
                             <h1 class="text-2xl font-bold text-white">HotTrack</h1>
                         </div>
                         <nav id="sidebarNav" class="flex flex-col space-y-2">
+                            <div data-target="dashboard" class="nav-link p-3 rounded-lg flex items-center gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10v11h18V10M3 10l9-7 9 7M3 10h18" /></svg>
+                                Dashboard
+                            </div>
                             <div data-target="pressels" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Criador de Pressel</div>
                             <div data-target="pixels" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 12l4.179 2.25M6.429 9.75l5.571 3 5.571-3m0 0l4.179-2.25L12 5.25 7.821 7.5" /></svg>Gerenciar Pixels</div>
                             <div data-target="bots" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Gerenciar Bots</div>
@@ -147,6 +151,30 @@
                         <div class="mt-auto"><button id="logoutButton" class="w-full text-gray-400 hover:bg-red-900/50 hover:text-white font-semibold py-2 px-4 rounded-md flex items-center justify-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>Sair</button></div>
                     </aside>
                     <main id="content" class="flex-1 p-8 overflow-y-auto"></main>
+                </div>`;
+            },
+            dashboard() {
+                return `
+                <div class="animate-fade-in">
+                    <h1 class="text-3xl font-bold text-white mb-6">Painel de Métricas</h1>
+                    <div id="dashboard-metrics" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="card p-6 rounded-lg text-center">
+                            <h3 class="text-sm text-gray-400">Cliques na Página</h3>
+                            <p id="metric-clicks" class="text-4xl font-bold text-sky-400 mt-2">...</p>
+                        </div>
+                        <div class="card p-6 rounded-lg text-center">
+                            <h3 class="text-sm text-gray-400">PIX Gerados</h3>
+                            <p id="metric-generated" class="text-4xl font-bold text-yellow-400 mt-2">...</p>
+                        </div>
+                        <div class="card p-6 rounded-lg text-center">
+                            <h3 class="text-sm text-gray-400">PIX Pagos</h3>
+                            <p id="metric-paid" class="text-4xl font-bold text-green-400 mt-2">...</p>
+                        </div>
+                        <div class="card p-6 rounded-lg text-center">
+                            <h3 class="text-sm text-gray-400">Taxa de Conversão</h3>
+                            <p id="metric-conversion" class="text-4xl font-bold text-purple-400 mt-2">...</p>
+                        </div>
+                    </div>
                 </div>`;
             },
             pixels() {
@@ -567,9 +595,25 @@
             const contentContainer = document.getElementById('content');
             if (contentContainer && this.templates[page]) {
                 contentContainer.innerHTML = this.templates[page]();
+                if (page === 'dashboard') {
+                    this.fetchDashboardMetrics();
+                }
                 document.querySelectorAll('.nav-link').forEach(item => {
                     item.classList.toggle('active', item.dataset.target === page);
                 });
+            }
+        },
+
+        async fetchDashboardMetrics() {
+            try {
+                const metrics = await this.apiRequest('/api/dashboard/metrics');
+                document.getElementById('metric-clicks').textContent = metrics.total_clicks;
+                document.getElementById('metric-generated').textContent = metrics.total_pix_generated;
+                document.getElementById('metric-paid').textContent = metrics.total_pix_paid;
+                document.getElementById('metric-conversion').textContent = `${metrics.conversion_rate}%`;
+            } catch (e) {
+                this.showToast("Não foi possível carregar as métricas do painel.", 'error');
+                document.getElementById('dashboard-metrics').innerHTML = '<p class="text-gray-500 text-center">Erro ao carregar os dados. Tente novamente mais tarde.</p>';
             }
         },
 
