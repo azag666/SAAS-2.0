@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HotTrack SAAS</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡️</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -239,7 +240,6 @@
                     <div class="p-3 bg-slate-900/50 rounded flex justify-between items-center">
                         <span class="text-sm font-medium">${b.bot_name}</span>
                         <div class="space-x-2">
-                           <button data-id="${b.id}" class="manage-flow-btn btn text-xs py-1 px-2">Gerenciar Fluxo</button>
                            <button data-id="${b.id}" class="delete-bot-btn btn btn-red text-xs py-1 px-2">Excluir</button>
                         </div>
                     </div>`).join('');
@@ -298,7 +298,13 @@
             transactions() {
                 return `
                 <div class="animate-fade-in">
-                    <h1 class="text-3xl font-bold text-white mb-6">Histórico de Transações</h1>
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-3xl font-bold text-white">Histórico de Transações</h1>
+                        <button id="refreshTransactionsBtn" class="btn text-sm py-2 px-3">
+                            <svg class="h-4 w-4 inline-block mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001m0 0h-4.992m4.992 0L21 9.348M16.023 9.348A10.038 10.038 0 0112 19.5 10.038 10.038 0 012.98 9.348" /></svg>
+                            Atualizar
+                        </button>
+                    </div>
                     <div class="card p-6 rounded-lg">
                         <div id="transactions-table-container" class="overflow-x-auto">
                             <table class="table-custom w-full text-sm">
@@ -467,6 +473,7 @@
                 if (e.target.id === 'logoutButton') this.logout();
                 if (e.target.id === 'closeModalBtn') document.getElementById('modal-container').innerHTML = '';
                 if (e.target.id === 'refreshDashboardBtn') this.fetchDashboardMetrics();
+                if (e.target.id === 'refreshTransactionsBtn') this.fetchTransactions();
                 
                 const sidebarLink = e.target.closest('.nav-link');
                 if (sidebarLink) this.navigateTo(sidebarLink.dataset.target);
