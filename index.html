@@ -142,6 +142,10 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10v11h18V10M3 10l9-7 9 7M3 10h18" /></svg>
                                 Dashboard
                             </div>
+                            <div data-target="transactions" class="nav-link p-3 rounded-lg flex items-center gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10v11h18V10M3 10l9-7 9 7M3 10h18" /></svg>
+                                Transações
+                            </div>
                             <div data-target="pressels" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Criador de Pressel</div>
                             <div data-target="pixels" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 12l4.179 2.25M6.429 9.75l5.571 3 5.571-3m0 0l4.179-2.25L12 5.25 7.821 7.5" /></svg>Gerenciar Pixels</div>
                             <div data-target="bots" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Gerenciar Bots</div>
@@ -158,10 +162,14 @@
                 <div class="animate-fade-in">
                     <div class="flex justify-between items-center mb-6">
                         <h1 class="text-3xl font-bold text-white">Painel de Métricas</h1>
-                        <button id="refreshDashboardBtn" class="btn text-sm py-2 px-3">
-                            <svg class="h-4 w-4 inline-block mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001m0 0h-4.992m4.992 0L21 9.348M16.023 9.348A10.038 10.038 0 0112 19.5 10.038 10.038 0 012.98 9.348" /></svg>
-                            Atualizar
-                        </button>
+                        <div class="flex items-center space-x-4">
+                            <input type="date" id="startDate" class="form-input p-2 rounded-md">
+                            <input type="date" id="endDate" class="form-input p-2 rounded-md">
+                            <button id="refreshDashboardBtn" class="btn text-sm py-2 px-3">
+                                <svg class="h-4 w-4 inline-block mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001m0 0h-4.992m4.992 0L21 9.348M16.023 9.348A10.038 10.038 0 0112 19.5 10.038 10.038 0 012.98 9.348" /></svg>
+                                Atualizar
+                            </button>
+                        </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
                         <div class="card p-6 rounded-lg text-center">
@@ -204,6 +212,37 @@
                                     <tbody id="traffic-by-state-table"><tr><td colspan="2">Carregando...</td></tr></tbody>
                                 </table>
                             </div>
+                        </div>
+                    </div>
+                </div>`;
+            },
+            transactions() {
+                return `
+                <div class="animate-fade-in">
+                    <h1 class="text-3xl font-bold text-white mb-6">Transações Recentes</h1>
+                    <div class="card p-6 rounded-lg">
+                        <div class="flex justify-end mb-4">
+                             <button id="refreshTransactionsBtn" class="btn text-sm py-2 px-3">
+                                <svg class="h-4 w-4 inline-block mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001m0 0h-4.992m4.992 0L21 9.348M16.023 9.348A10.038 10.038 0 0112 19.5 10.038 10.038 0 012.98 9.348" /></svg>
+                                Atualizar
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="table-custom w-full text-sm">
+                                <thead>
+                                    <tr>
+                                        <th>ID da Transação</th>
+                                        <th>Valor</th>
+                                        <th>Status</th>
+                                        <th>Bot</th>
+                                        <th>Click ID</th>
+                                        <th>Data</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactions-table">
+                                    <tr><td colspan="6" class="text-center text-gray-500">Carregando...</td></tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>`;
@@ -629,6 +668,8 @@
                 contentContainer.innerHTML = this.templates[page]();
                 if (page === 'dashboard') {
                     this.fetchDashboardMetrics();
+                } else if (page === 'transactions') {
+                    this.fetchTransactions();
                 }
                 document.querySelectorAll('.nav-link').forEach(item => {
                     item.classList.toggle('active', item.dataset.target === page);
@@ -638,16 +679,21 @@
 
         async fetchDashboardMetrics() {
             try {
-                const metrics = await this.apiRequest('/api/dashboard/metrics');
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                let endpoint = '/api/dashboard/metrics';
+                if (startDate && endDate) {
+                    endpoint += `?startDate=${startDate}&endDate=${endDate}`;
+                }
+
+                const metrics = await this.apiRequest(endpoint);
                 
-                // Atualiza os cards de métricas
                 document.getElementById('metric-clicks').textContent = metrics.total_clicks || '0';
                 document.getElementById('metric-generated').textContent = metrics.total_pix_generated || '0';
                 document.getElementById('metric-paid').textContent = metrics.total_pix_paid || '0';
                 document.getElementById('metric-total-revenue').textContent = `R$ ${(metrics.total_revenue || 0).toFixed(2).replace('.', ',')}`;
                 document.getElementById('metric-paid-revenue').textContent = `R$ ${(metrics.paid_revenue || 0).toFixed(2).replace('.', ',')}`;
 
-                // Renderiza a tabela de desempenho por Bot
                 const botsTableBody = document.getElementById('bots-performance-table');
                 if (metrics.bots_performance && metrics.bots_performance.length > 0) {
                     botsTableBody.innerHTML = metrics.bots_performance.map(b => `
@@ -662,7 +708,6 @@
                     botsTableBody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500">Nenhum dado de bot.</td></tr>';
                 }
 
-                // Renderiza a tabela de tráfego por Estado
                 const trafficTableBody = document.getElementById('traffic-by-state-table');
                 if (metrics.clicks_by_state && metrics.clicks_by_state.length > 0) {
                     trafficTableBody.innerHTML = metrics.clicks_by_state.map(s => `
@@ -678,6 +723,35 @@
             } catch (e) {
                 console.error("Erro ao carregar métricas do painel:", e);
                 this.showToast("Não foi possível carregar as métricas do painel.", 'error');
+            }
+        },
+
+        async fetchTransactions() {
+            try {
+                const transactions = await this.apiRequest('/api/transactions');
+                const transactionsTableBody = document.getElementById('transactions-table');
+                
+                if (transactions && transactions.length > 0) {
+                    transactionsTableBody.innerHTML = transactions.map(t => {
+                        const statusColor = t.status === 'paid' ? 'text-green-400' : 'text-yellow-400';
+                        return `
+                            <tr class="hover:bg-slate-800/50">
+                                <td>${t.pix_id.substring(0, 8)}...</td>
+                                <td>R$ ${t.pix_value.toFixed(2).replace('.', ',')}</td>
+                                <td class="${statusColor}">${t.status === 'paid' ? 'Pago' : 'Pendente'}</td>
+                                <td>${t.bot_name || 'N/A'}</td>
+                                <td>${t.click_id || 'N/A'}</td>
+                                <td>${new Date(t.created_at).toLocaleString('pt-BR')}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    transactionsTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500">Nenhuma transação encontrada.</td></tr>';
+                }
+            } catch (e) {
+                console.error("Erro ao carregar transações:", e);
+                this.showToast("Não foi possível carregar as transações.", 'error');
+                document.getElementById('transactions-table').innerHTML = '<tr><td colspan="6" class="text-center text-red-400">Erro ao carregar transações.</td></tr>';
             }
         },
 
