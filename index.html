@@ -142,10 +142,6 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10v11h18V10M3 10l9-7 9 7M3 10h18" /></svg>
                                 Dashboard
                             </div>
-                            <div data-target="transactions" class="nav-link p-3 rounded-lg flex items-center gap-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10v11h18V10M3 10l9-7 9 7M3 10h18" /></svg>
-                                Transações
-                            </div>
                             <div data-target="pressels" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Criador de Pressel</div>
                             <div data-target="pixels" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 12l4.179 2.25M6.429 9.75l5.571 3 5.571-3m0 0l4.179-2.25L12 5.25 7.821 7.5" /></svg>Gerenciar Pixels</div>
                             <div data-target="bots" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Gerenciar Bots</div>
@@ -162,16 +158,10 @@
                 <div class="animate-fade-in">
                     <div class="flex justify-between items-center mb-6">
                         <h1 class="text-3xl font-bold text-white">Painel de Métricas</h1>
-                        <div class="flex items-center space-x-2">
-                            <label class="text-sm font-medium text-gray-400">De:</label>
-                            <input type="date" id="startDate" class="form-input p-2 rounded-md">
-                            <label class="text-sm font-medium text-gray-400">Até:</label>
-                            <input type="date" id="endDate" class="form-input p-2 rounded-md">
-                            <button id="refreshDashboardBtn" class="btn text-sm py-2 px-3">
-                                <svg class="h-4 w-4 inline-block mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001m0 0h-4.992m4.992 0L21 9.348M16.023 9.348A10.038 10.038 0 0112 19.5 10.038 10.038 0 012.98 9.348" /></svg>
-                                Atualizar
-                            </button>
-                        </div>
+                        <button id="refreshDashboardBtn" class="btn text-sm py-2 px-3">
+                            <svg class="h-4 w-4 inline-block mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001m0 0h-4.992m4.992 0L21 9.348M16.023 9.348A10.038 10.038 0 0112 19.5 10.038 10.038 0 012.98 9.348" /></svg>
+                            Atualizar
+                        </button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
                         <div class="card p-6 rounded-lg text-center">
@@ -202,7 +192,7 @@
                             <div id="bots-performance-table-container" class="overflow-x-auto">
                                 <table class="table-custom w-full text-sm">
                                     <thead><tr><th>Bot</th><th>Cliques</th><th>Vendas</th><th>Faturamento</th></tr></thead>
-                                    <tbody id="bots-performance-table"><tr><td colspan="4" class="text-center text-gray-500">Carregando...</td></tr></tbody>
+                                    <tbody id="bots-performance-table"><tr><td colspan="4">Carregando...</td></tr></tbody>
                                 </table>
                             </div>
                         </div>
@@ -211,46 +201,9 @@
                             <div id="traffic-by-state-table-container" class="overflow-x-auto">
                                 <table class="table-custom w-full text-sm">
                                     <thead><tr><th>Estado</th><th>Cliques</th></tr></thead>
-                                    <tbody id="traffic-by-state-table"><tr><td colspan="2" class="text-center text-gray-500">Carregando...</td></tr></tbody>
+                                    <tbody id="traffic-by-state-table"><tr><td colspan="2">Carregando...</td></tr></tbody>
                                 </table>
                             </div>
-                        </div>
-                    </div>
-                </div>`;
-            },
-            transactions() {
-                return `
-                <div class="animate-fade-in">
-                    <div class="flex justify-between items-center mb-6">
-                        <h1 class="text-3xl font-bold text-white">Transações Recentes</h1>
-                        <div class="flex items-center space-x-2">
-                            <label class="text-sm font-medium text-gray-400">De:</label>
-                            <input type="date" id="startDateTrans" class="form-input p-2 rounded-md">
-                            <label class="text-sm font-medium text-gray-400">Até:</label>
-                            <input type="date" id="endDateTrans" class="form-input p-2 rounded-md">
-                            <button id="refreshTransactionsBtn" class="btn text-sm py-2 px-3">
-                                <svg class="h-4 w-4 inline-block mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001m0 0h-4.992m4.992 0L21 9.348M16.023 9.348A10.038 10.038 0 0112 19.5 10.038 10.038 0 012.98 9.348" /></svg>
-                                Atualizar
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card p-6 rounded-lg">
-                        <div class="overflow-x-auto">
-                            <table class="table-custom w-full text-sm">
-                                <thead>
-                                    <tr>
-                                        <th>ID da Transação</th>
-                                        <th>Valor</th>
-                                        <th>Status</th>
-                                        <th>Bot</th>
-                                        <th>Click ID</th>
-                                        <th>Data</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="transactions-table">
-                                    <tr><td colspan="6" class="text-center text-gray-500">Carregando...</td></tr>
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                 </div>`;
@@ -409,7 +362,106 @@
                             <div class="flex items-center gap-2">
                                 <input id="hottrack-api-key" type="password" readonly value="${App.state.data.settings.api_key || ''}" class="form-input flex-grow p-2 rounded-md">
                                 <button type="button" class="toggle-visibility-btn p-2 text-gray-400 hover:text-white" data-target="#hottrack-api-key">
-                                    <svg class="pointer-events-none h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.243 4.243L6.228 6.228" /></svg>` 
+                                    <svg class="pointer-events-none h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                </button>
+                                <button type="button" class="copy-btn btn text-sm py-2 px-3" data-target="#hottrack-api-key">Copiar</button>
+                            </div>
+                        </div>
+                        <div class="card p-8 rounded-lg">
+                            <h2 class="text-xl font-semibold mb-4 text-white">Documentação Completa</h2>
+                            <p class="text-gray-400 mb-4">Acesse nosso guia detalhado com o passo a passo completo para integrar o HotTrack com o ManyChat e outras ferramentas.</p>
+                            <a href="https://documentacaohot.netlify.app/" target="_blank" rel="noopener noreferrer" class="btn inline-flex items-center gap-2">
+                                Acessar Documentação
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>`;
+            },
+            modal(title, content) {
+                return `<div id="modal" class="modal active"><div class="card p-6 rounded-lg w-full max-w-2xl animate-fade-in"><div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold">${title}</h2><button id="closeModalBtn" class="text-gray-400 hover:text-white text-2xl">&times;</button></div>${content}</div></div>`;
+            },
+            botFlowModal(bot) {
+                const modalContent = `
+                    <p class="text-sm text-gray-400 mb-6">Configure a mensagem que o bot <strong>@${bot.bot_name}</strong> enviará ao receber o comando /start.</p>
+                    <form id="botFlowForm" data-bot-id="${bot.id}" class="space-y-4">
+                        <div>
+                            <label class="text-sm font-medium text-gray-400 block mb-1">URL da Imagem</label>
+                            <input name="flow_image_url" placeholder="https://exemplo.com/imagem.png" class="form-input w-full p-2 rounded-md" required>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm font-medium text-gray-400 block mb-1">Valor do PIX (Ex: 9.90)</label>
+                            <input name="flow_pix_value" type="number" step="0.01" placeholder="9.90" class="form-input w-full p-2 rounded-md" required>
+                        </div>
+
+                        <div>
+                            <label class="text-sm font-medium text-gray-400 block mb-1">Texto da Mensagem</label>
+                            <textarea name="flow_text" placeholder="Digite o texto que aparecerá junto com a imagem." class="form-input w-full p-2 rounded-md" rows="4" required></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-sm font-medium text-gray-400 block mb-1">Texto Botão PIX</label>
+                                <input name="flow_button_pix_text" value="✅ Gerar PIX" class="form-input w-full p-2 rounded-md" required>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-400 block mb-1">Texto Botão Consultar</label>
+                                <input name="flow_button_check_text" value="🔎 Consultar PIX" class="form-input w-full p-2 rounded-md" required>
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-4 pt-4">
+                            <button type="button" id="setWebhookBtn" data-bot-id="${bot.id}" class="btn btn-green">Ativar/Atualizar Bot</button>
+                            <button type="submit" class="btn">Salvar Fluxo</button>
+                        </div>
+                    </form>
+                `;
+                return this.modal(`Gerenciar Fluxo de @${bot.bot_name}`, modalContent);
+            }
+        },
+
+        addAuthEventListeners() {
+            const container = document.getElementById('app');
+            container.addEventListener('click', (e) => {
+                if (e.target.id === 'showRegister') { e.preventDefault(); this.renderLogin('register'); }
+                if (e.target.id === 'showLogin') { e.preventDefault(); this.renderLogin('login'); }
+            });
+            container.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const form = e.target;
+                const data = Object.fromEntries(new FormData(form).entries());
+                if (form.id === 'loginForm') await this.login(data.email, data.password);
+                if (form.id === 'registerForm') await this.register(data.name, data.email, data.password);
+            });
+        },
+        
+        addDashboardEventListeners() {
+            document.addEventListener('click', async (e) => {
+                if (e.target.id === 'logoutButton') this.logout();
+                if (e.target.id === 'closeModalBtn') document.getElementById('modal-container').innerHTML = '';
+                if (e.target.id === 'refreshDashboardBtn') this.fetchDashboardMetrics();
+                
+                const sidebarLink = e.target.closest('.nav-link');
+                if (sidebarLink) this.navigateTo(sidebarLink.dataset.target);
+
+                const copyBtn = e.target.closest('.copy-btn');
+                if (copyBtn) {
+                    const targetInput = document.querySelector(copyBtn.dataset.target);
+                    if(targetInput && targetInput.value) {
+                        navigator.clipboard.writeText(targetInput.value).then(() => {
+                            const originalText = copyBtn.textContent;
+                            copyBtn.textContent = 'Copiado!';
+                            setTimeout(() => { copyBtn.textContent = originalText; }, 2000);
+                        });
+                    }
+                }
+                
+                const toggleBtn = e.target.closest('.toggle-visibility-btn');
+                if (toggleBtn) {
+                    const targetInput = document.querySelector(toggleBtn.dataset.target);
+                    const isPassword = targetInput.type === 'password';
+                    targetInput.type = isPassword ? 'text' : 'password';
+                    toggleBtn.innerHTML = isPassword 
+                        ? `<svg class="pointer-events-none h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.243 4.243L6.228 6.228" /></svg>` 
                         : `<svg class="pointer-events-none h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`;
                 }
 
@@ -576,51 +628,26 @@
             if (contentContainer && this.templates[page]) {
                 contentContainer.innerHTML = this.templates[page]();
                 if (page === 'dashboard') {
-                    this.setupDateFilters('dashboard');
                     this.fetchDashboardMetrics();
-                } else if (page === 'transactions') {
-                    this.setupDateFilters('transactions');
-                    this.fetchTransactions();
                 }
                 document.querySelectorAll('.nav-link').forEach(item => {
                     item.classList.toggle('active', item.dataset.target === page);
                 });
             }
         },
-        
-        setupDateFilters(page) {
-            const today = new Date().toISOString().split('T')[0];
-            const startDateEl = document.getElementById(page === 'dashboard' ? 'startDate' : 'startDateTrans');
-            const endDateEl = document.getElementById(page === 'dashboard' ? 'endDate' : 'endDateTrans');
-            
-            if (startDateEl && endDateEl) {
-                startDateEl.value = today;
-                endDateEl.value = today;
-            }
-        },
 
         async fetchDashboardMetrics() {
             try {
-                const startDateEl = document.getElementById('startDate');
-                const endDateEl = document.getElementById('endDate');
+                const metrics = await this.apiRequest('/api/dashboard/metrics');
                 
-                let endpoint = '/api/dashboard/metrics';
-                const startDate = startDateEl.value;
-                const endDate = endDateEl.value;
-                
-                // Só adiciona o filtro se ambos os campos estiverem preenchidos
-                if (startDate && endDate) {
-                    endpoint += `?startDate=${startDate}&endDate=${endDate}`;
-                }
-        
-                const metrics = await this.apiRequest(endpoint);
-                
+                // Atualiza os cards de métricas
                 document.getElementById('metric-clicks').textContent = metrics.total_clicks || '0';
                 document.getElementById('metric-generated').textContent = metrics.total_pix_generated || '0';
                 document.getElementById('metric-paid').textContent = metrics.total_pix_paid || '0';
                 document.getElementById('metric-total-revenue').textContent = `R$ ${(metrics.total_revenue || 0).toFixed(2).replace('.', ',')}`;
                 document.getElementById('metric-paid-revenue').textContent = `R$ ${(metrics.paid_revenue || 0).toFixed(2).replace('.', ',')}`;
-        
+
+                // Renderiza a tabela de desempenho por Bot
                 const botsTableBody = document.getElementById('bots-performance-table');
                 if (metrics.bots_performance && metrics.bots_performance.length > 0) {
                     botsTableBody.innerHTML = metrics.bots_performance.map(b => `
@@ -632,9 +659,10 @@
                         </tr>
                     `).join('');
                 } else {
-                    botsTableBody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500">Nenhum resultado encontrado.</td></tr>';
+                    botsTableBody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500">Nenhum dado de bot.</td></tr>';
                 }
-        
+
+                // Renderiza a tabela de tráfego por Estado
                 const trafficTableBody = document.getElementById('traffic-by-state-table');
                 if (metrics.clicks_by_state && metrics.clicks_by_state.length > 0) {
                     trafficTableBody.innerHTML = metrics.clicks_by_state.map(s => `
@@ -644,49 +672,12 @@
                         </tr>
                     `).join('');
                 } else {
-                    trafficTableBody.innerHTML = '<tr><td colspan="2" class="text-center text-gray-500">Nenhum resultado encontrado.</td></tr>';
+                    trafficTableBody.innerHTML = '<tr><td colspan="2" class="text-center text-gray-500">Nenhum tráfego registrado por estado.</td></tr>';
                 }
                 
             } catch (e) {
                 console.error("Erro ao carregar métricas do painel:", e);
                 this.showToast("Não foi possível carregar as métricas do painel.", 'error');
-            }
-        },
-        
-        async fetchTransactions() {
-            try {
-                const startDate = document.getElementById('startDateTrans').value;
-                const endDate = document.getElementById('endDateTrans').value;
-                let endpoint = '/api/transactions';
-                
-                if (startDate && endDate) {
-                    endpoint += `?startDate=${startDate}&endDate=${endDate}`;
-                }
-
-                const transactions = await this.apiRequest(endpoint);
-                const transactionsTableBody = document.getElementById('transactions-table');
-                
-                if (transactions && transactions.length > 0) {
-                    transactionsTableBody.innerHTML = transactions.map(t => {
-                        const statusColor = t.status === 'paid' ? 'text-green-400' : 'text-yellow-400';
-                        return `
-                            <tr class="hover:bg-slate-800/50">
-                                <td>${t.pix_id.substring(0, 8)}...</td>
-                                <td>R$ ${t.pix_value.toFixed(2).replace('.', ',')}</td>
-                                <td class="${statusColor}">${t.status === 'paid' ? 'Pago' : 'Pendente'}</td>
-                                <td>${t.bot_name || 'N/A'}</td>
-                                <td>${t.click_id || 'N/A'}</td>
-                                <td>${new Date(t.created_at).toLocaleString('pt-BR')}</td>
-                            </tr>
-                        `;
-                    }).join('');
-                } else {
-                    transactionsTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500">Nenhum resultado encontrado.</td></tr>';
-                }
-            } catch (e) {
-                console.error("Erro ao carregar transações:", e);
-                this.showToast("Não foi possível carregar as transações.", 'error');
-                document.getElementById('transactions-table').innerHTML = '<tr><td colspan="6" class="text-center text-red-400">Erro ao carregar transações.</td></tr>';
             }
         },
 
