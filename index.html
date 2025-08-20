@@ -409,108 +409,7 @@
                             <div class="flex items-center gap-2">
                                 <input id="hottrack-api-key" type="password" readonly value="${App.state.data.settings.api_key || ''}" class="form-input flex-grow p-2 rounded-md">
                                 <button type="button" class="toggle-visibility-btn p-2 text-gray-400 hover:text-white" data-target="#hottrack-api-key">
-                                    <svg class="pointer-events-none h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                </button>
-                                <button type="button" class="copy-btn btn text-sm py-2 px-3" data-target="#hottrack-api-key">Copiar</button>
-                            </div>
-                        </div>
-                        <div class="card p-8 rounded-lg">
-                            <h2 class="text-xl font-semibold mb-4 text-white">Documentação Completa</h2>
-                            <p class="text-gray-400 mb-4">Acesse nosso guia detalhado com o passo a passo completo para integrar o HotTrack com o ManyChat e outras ferramentas.</p>
-                            <a href="https://documentacaohot.netlify.app/" target="_blank" rel="noopener noreferrer" class="btn inline-flex items-center gap-2">
-                                Acessar Documentação
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>`;
-            },
-            modal(title, content) {
-                return `<div id="modal" class="modal active"><div class="card p-6 rounded-lg w-full max-w-2xl animate-fade-in"><div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold">${title}</h2><button id="closeModalBtn" class="text-gray-400 hover:text-white text-2xl">&times;</button></div>${content}</div></div>`;
-            },
-            botFlowModal(bot) {
-                const modalContent = `
-                    <p class="text-sm text-gray-400 mb-6">Configure a mensagem que o bot <strong>@${bot.bot_name}</strong> enviará ao receber o comando /start.</p>
-                    <form id="botFlowForm" data-bot-id="${bot.id}" class="space-y-4">
-                        <div>
-                            <label class="text-sm font-medium text-gray-400 block mb-1">URL da Imagem</label>
-                            <input name="flow_image_url" placeholder="https://exemplo.com/imagem.png" class="form-input w-full p-2 rounded-md" required>
-                        </div>
-                        
-                        <div>
-                            <label class="text-sm font-medium text-gray-400 block mb-1">Valor do PIX (Ex: 9.90)</label>
-                            <input name="flow_pix_value" type="number" step="0.01" placeholder="9.90" class="form-input w-full p-2 rounded-md" required>
-                        </div>
-
-                        <div>
-                            <label class="text-sm font-medium text-gray-400 block mb-1">Texto da Mensagem</label>
-                            <textarea name="flow_text" placeholder="Digite o texto que aparecerá junto com a imagem." class="form-input w-full p-2 rounded-md" rows="4" required></textarea>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-sm font-medium text-gray-400 block mb-1">Texto Botão PIX</label>
-                                <input name="flow_button_pix_text" value="✅ Gerar PIX" class="form-input w-full p-2 rounded-md" required>
-                            </div>
-                            <div>
-                                <label class="text-sm font-medium text-gray-400 block mb-1">Texto Botão Consultar</label>
-                                <input name="flow_button_check_text" value="🔎 Consultar PIX" class="form-input w-full p-2 rounded-md" required>
-                            </div>
-                        </div>
-                        <div class="flex justify-end gap-4 pt-4">
-                            <button type="button" id="setWebhookBtn" data-bot-id="${bot.id}" class="btn btn-green">Ativar/Atualizar Bot</button>
-                            <button type="submit" class="btn">Salvar Fluxo</button>
-                        </div>
-                    </form>
-                `;
-                return this.modal(`Gerenciar Fluxo de @${bot.bot_name}`, modalContent);
-            }
-        },
-
-        addAuthEventListeners() {
-            const container = document.getElementById('app');
-            container.addEventListener('click', (e) => {
-                if (e.target.id === 'showRegister') { e.preventDefault(); this.renderLogin('register'); }
-                if (e.target.id === 'showLogin') { e.preventDefault(); this.renderLogin('login'); }
-            });
-            container.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const form = e.target;
-                const data = Object.fromEntries(new FormData(form).entries());
-                if (form.id === 'loginForm') await this.login(data.email, data.password);
-                if (form.id === 'registerForm') await this.register(data.name, data.email, data.password);
-            });
-        },
-        
-        addDashboardEventListeners() {
-            document.addEventListener('click', async (e) => {
-                if (e.target.id === 'logoutButton') this.logout();
-                if (e.target.id === 'closeModalBtn') document.getElementById('modal-container').innerHTML = '';
-                
-                const sidebarLink = e.target.closest('.nav-link');
-                if (sidebarLink) this.navigateTo(sidebarLink.dataset.target);
-                
-                if (e.target.id === 'refreshDashboardBtn') this.fetchDashboardMetrics();
-                if (e.target.id === 'refreshTransactionsBtn') this.fetchTransactions();
-
-                const copyBtn = e.target.closest('.copy-btn');
-                if (copyBtn) {
-                    const targetInput = document.querySelector(copyBtn.dataset.target);
-                    if(targetInput && targetInput.value) {
-                        navigator.clipboard.writeText(targetInput.value).then(() => {
-                            const originalText = copyBtn.textContent;
-                            copyBtn.textContent = 'Copiado!';
-                            setTimeout(() => { copyBtn.textContent = originalText; }, 2000);
-                        });
-                    }
-                }
-                
-                const toggleBtn = e.target.closest('.toggle-visibility-btn');
-                if (toggleBtn) {
-                    const targetInput = document.querySelector(toggleBtn.dataset.target);
-                    const isPassword = targetInput.type === 'password';
-                    targetInput.type = isPassword ? 'text' : 'password';
-                    toggleBtn.innerHTML = isPassword 
-                        ? `<svg class="pointer-events-none h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.243 4.243L6.228 6.228" /></svg>` 
+                                    <svg class="pointer-events-none h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.243 4.243L6.228 6.228" /></svg>` 
                         : `<svg class="pointer-events-none h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`;
                 }
 
@@ -695,22 +594,30 @@
             const endDateEl = document.getElementById(page === 'dashboard' ? 'endDate' : 'endDateTrans');
             
             if (startDateEl && endDateEl) {
+                // Remove listeners antigos para evitar múltiplas chamadas
+                startDateEl.removeEventListener('change', this.onDateFilterChange);
+                endDateEl.removeEventListener('change', this.onDateFilterChange);
+
                 startDateEl.value = today;
                 endDateEl.value = today;
-                startDateEl.addEventListener('change', () => { if(page === 'dashboard') this.fetchDashboardMetrics(); else this.fetchTransactions(); });
-                endDateEl.addEventListener('change', () => { if(page === 'dashboard') this.fetchDashboardMetrics(); else this.fetchTransactions(); });
+                
+                // Adiciona novos listeners
+                startDateEl.addEventListener('change', () => {
+                    if (page === 'dashboard') { this.fetchDashboardMetrics(); } else { this.fetchTransactions(); }
+                });
+                endDateEl.addEventListener('change', () => {
+                    if (page === 'dashboard') { this.fetchDashboardMetrics(); } else { this.fetchTransactions(); }
+                });
             }
         },
 
         async fetchDashboardMetrics() {
             try {
-                const startDateEl = document.getElementById('startDate');
-                const endDateEl = document.getElementById('endDate');
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
                 
-                const startDate = startDateEl.value;
-                const endDate = endDateEl.value;
-
                 let endpoint = '/api/dashboard/metrics';
+                // Adiciona filtros apenas se ambos os campos estiverem preenchidos
                 if (startDate && endDate) {
                     endpoint += `?startDate=${startDate}&endDate=${endDate}`;
                 }
@@ -760,6 +667,7 @@
                 const startDate = document.getElementById('startDateTrans').value;
                 const endDate = document.getElementById('endDateTrans').value;
                 let endpoint = '/api/transactions';
+                // Adiciona filtros apenas se ambos os campos estiverem preenchidos
                 if (startDate && endDate) {
                     endpoint += `?startDate=${startDate}&endDate=${endDate}`;
                 }
