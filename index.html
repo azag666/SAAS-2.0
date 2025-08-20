@@ -145,6 +145,10 @@
                             <div data-target="pressels" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Criador de Pressel</div>
                             <div data-target="pixels" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 12l4.179 2.25M6.429 9.75l5.571 3 5.571-3m0 0l4.179-2.25L12 5.25 7.821 7.5" /></svg>Gerenciar Pixels</div>
                             <div data-target="bots" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Gerenciar Bots</div>
+                            <div data-target="transactions" class="nav-link p-3 rounded-lg flex items-center gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.01 60.01 0 0110.875-3.004m-.89 6.002c-.087-.665-.544-1.284-1.2-1.76l-.427-.36a4.5 4.5 0 01-1.272-3.138v-.686m12.446 3.004c-.66.087-1.284.544-1.76 1.2l-.36.427a4.5 4.5 0 01-3.138 1.272h-.686m0-15.558a.75.75 0 00-.75-.75H12a.75.75 0 00-.75.75v.686a4.5 4.5 0 01-1.272 3.138l-.36.427c-.476.66-.544 1.284-.36 1.76M21.75 12a.75.75 0 00-.75-.75H12a.75.75 0 00-.75.75v.686a4.5 4.5 0 01-3.138 1.272l-.36.427c-.476.66-.544 1.284-.36 1.76m0-4.5a.75.75 0 00-.75-.75H12a.75.75 0 00-.75.75v.686a4.5 4.5 0 01-1.272 3.138l-.36.427c-.476.66-.544 1.284-.36 1.76M21.75 12a.75.75 0 00-.75-.75H12a.75.75 0 00-.75.75v.686a4.5 4.5 0 01-3.138 1.272l-.36.427c-.476.66-.544 1.284-.36 1.76" /></svg>
+                                Transações
+                            </div>
                             <div data-target="settings" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>API PIX</div>
                             <div data-target="documentation" class="nav-link p-3 rounded-lg flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>Documentação</div>
                         </nav>
@@ -287,6 +291,30 @@
                         <div class="card p-6 rounded-lg">
                             <h2 class="text-xl font-bold mb-4 text-white">Pressels Criadas</h2>
                             <div id="pressel-list" class="space-y-3">${presselList.length ? presselList : '<p class="text-gray-500 text-sm">Nenhuma pressel criada.</p>'}</div>
+                        </div>
+                    </div>
+                </div>`;
+            },
+            transactions() {
+                return `
+                <div class="animate-fade-in">
+                    <h1 class="text-3xl font-bold text-white mb-6">Histórico de Transações</h1>
+                    <div class="card p-6 rounded-lg">
+                        <div id="transactions-table-container" class="overflow-x-auto">
+                            <table class="table-custom w-full text-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Valor</th>
+                                        <th>Bot</th>
+                                        <th>Provedor PIX</th>
+                                        <th>Data</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactions-table-body">
+                                    <tr><td colspan="5" class="text-center text-gray-500">Carregando transações...</td></tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>`;
@@ -629,6 +657,8 @@
                 contentContainer.innerHTML = this.templates[page]();
                 if (page === 'dashboard') {
                     this.fetchDashboardMetrics();
+                } else if (page === 'transactions') {
+                    this.fetchTransactions();
                 }
                 document.querySelectorAll('.nav-link').forEach(item => {
                     item.classList.toggle('active', item.dataset.target === page);
@@ -678,6 +708,36 @@
             } catch (e) {
                 console.error("Erro ao carregar métricas do painel:", e);
                 this.showToast("Não foi possível carregar as métricas do painel.", 'error');
+            }
+        },
+
+        async fetchTransactions() {
+            const tableBody = document.getElementById('transactions-table-body');
+            try {
+                const transactions = await this.apiRequest('/api/transactions');
+                if (transactions.length > 0) {
+                    tableBody.innerHTML = transactions.map(t => {
+                        const statusColor = t.status === 'paid' ? 'text-green-400' : 'text-yellow-400';
+                        const statusText = t.status === 'paid' ? 'Pago' : 'Pendente';
+                        const formattedValue = `R$ ${parseFloat(t.pix_value).toFixed(2).replace('.', ',')}`;
+                        const formattedDate = new Date(t.created_at).toLocaleString('pt-BR');
+                        
+                        return `
+                            <tr class="hover:bg-slate-800/50">
+                                <td class="${statusColor}">${statusText}</td>
+                                <td>${formattedValue}</td>
+                                <td>${t.bot_name}</td>
+                                <td>${t.provider.toUpperCase()}</td>
+                                <td>${formattedDate}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500">Nenhuma transação encontrada.</td></tr>';
+                }
+            } catch (e) {
+                console.error("Erro ao buscar transações:", e);
+                tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-red-400">Erro ao carregar transações.</td></tr>';
             }
         },
 
