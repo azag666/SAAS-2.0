@@ -651,7 +651,7 @@
 
                 // Renderiza a tabela de desempenho por Bot
                 const botsTableBody = document.getElementById('bots-performance-table');
-                if (metrics.bots_performance.length > 0) {
+                if (metrics.bots_performance && metrics.bots_performance.length > 0) {
                     botsTableBody.innerHTML = metrics.bots_performance.map(b => `
                         <tr class="hover:bg-slate-800/50">
                             <td>${b.bot_name}</td>
@@ -666,7 +666,7 @@
 
                 // Renderiza a tabela de tráfego por Estado
                 const trafficTableBody = document.getElementById('traffic-by-state-table');
-                if (metrics.clicks_by_state.length > 0) {
+                if (metrics.clicks_by_state && metrics.clicks_by_state.length > 0) {
                     trafficTableBody.innerHTML = metrics.clicks_by_state.map(s => `
                         <tr class="hover:bg-slate-800/50">
                             <td>${s.state}</td>
