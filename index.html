@@ -694,18 +694,22 @@
             const startDateEl = document.getElementById(page === 'dashboard' ? 'startDate' : 'startDateTrans');
             const endDateEl = document.getElementById(page === 'dashboard' ? 'endDate' : 'endDateTrans');
             
-            if (startDateEl) {
+            if (startDateEl && endDateEl) {
                 startDateEl.value = today;
-            }
-            if (endDateEl) {
                 endDateEl.value = today;
+                startDateEl.addEventListener('change', () => { if(page === 'dashboard') this.fetchDashboardMetrics(); else this.fetchTransactions(); });
+                endDateEl.addEventListener('change', () => { if(page === 'dashboard') this.fetchDashboardMetrics(); else this.fetchTransactions(); });
             }
         },
 
         async fetchDashboardMetrics() {
             try {
-                const startDate = document.getElementById('startDate').value;
-                const endDate = document.getElementById('endDate').value;
+                const startDateEl = document.getElementById('startDate');
+                const endDateEl = document.getElementById('endDate');
+                
+                const startDate = startDateEl.value;
+                const endDate = endDateEl.value;
+
                 let endpoint = '/api/dashboard/metrics';
                 if (startDate && endDate) {
                     endpoint += `?startDate=${startDate}&endDate=${endDate}`;
