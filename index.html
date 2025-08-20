@@ -68,7 +68,7 @@
             API_BASE_URL: 'https://hottrack.vercel.app', // <<< CONFIRME SE ESTA É A URL CORRETA DO SEU BACKEND
             token: null,
             data: { pixels: [], bots: [], pressels: [], settings: {} },
-            currentPage: 'pressels'
+            currentPage: 'dashboard' // Define o dashboard como página inicial
         },
 
         async init() {
@@ -157,7 +157,13 @@
             dashboard() {
                 return `
                 <div class="animate-fade-in">
-                    <h1 class="text-3xl font-bold text-white mb-6">Painel de Métricas</h1>
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-3xl font-bold text-white">Painel de Métricas</h1>
+                        <button id="refreshDashboardBtn" class="btn text-sm py-2 px-3">
+                            <svg class="h-4 w-4 inline-block mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001m0 0h-4.992m4.992 0L21 9.348M16.023 9.348A10.038 10.038 0 0112 19.5 10.038 10.038 0 012.98 9.348" /></svg>
+                            Atualizar
+                        </button>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
                         <div class="card p-6 rounded-lg text-center">
                             <h3 class="text-sm text-gray-400">Cliques na Página</h3>
@@ -442,6 +448,7 @@
             document.addEventListener('click', async (e) => {
                 if (e.target.id === 'logoutButton') this.logout();
                 if (e.target.id === 'closeModalBtn') document.getElementById('modal-container').innerHTML = '';
+                if (e.target.id === 'refreshDashboardBtn') this.fetchDashboardMetrics();
                 
                 const sidebarLink = e.target.closest('.nav-link');
                 if (sidebarLink) this.navigateTo(sidebarLink.dataset.target);
