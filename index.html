@@ -162,8 +162,10 @@
                 <div class="animate-fade-in">
                     <div class="flex justify-between items-center mb-6">
                         <h1 class="text-3xl font-bold text-white">Painel de Métricas</h1>
-                        <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <label class="text-sm font-medium text-gray-400">De:</label>
                             <input type="date" id="startDate" class="form-input p-2 rounded-md">
+                            <label class="text-sm font-medium text-gray-400">Até:</label>
                             <input type="date" id="endDate" class="form-input p-2 rounded-md">
                             <button id="refreshDashboardBtn" class="btn text-sm py-2 px-3">
                                 <svg class="h-4 w-4 inline-block mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001m0 0h-4.992m4.992 0L21 9.348M16.023 9.348A10.038 10.038 0 0112 19.5 10.038 10.038 0 012.98 9.348" /></svg>
@@ -200,7 +202,7 @@
                             <div id="bots-performance-table-container" class="overflow-x-auto">
                                 <table class="table-custom w-full text-sm">
                                     <thead><tr><th>Bot</th><th>Cliques</th><th>Vendas</th><th>Faturamento</th></tr></thead>
-                                    <tbody id="bots-performance-table"><tr><td colspan="4">Carregando...</td></tr></tbody>
+                                    <tbody id="bots-performance-table"><tr><td colspan="4" class="text-center text-gray-500">Carregando...</td></tr></tbody>
                                 </table>
                             </div>
                         </div>
@@ -209,7 +211,7 @@
                             <div id="traffic-by-state-table-container" class="overflow-x-auto">
                                 <table class="table-custom w-full text-sm">
                                     <thead><tr><th>Estado</th><th>Cliques</th></tr></thead>
-                                    <tbody id="traffic-by-state-table"><tr><td colspan="2">Carregando...</td></tr></tbody>
+                                    <tbody id="traffic-by-state-table"><tr><td colspan="2" class="text-center text-gray-500">Carregando...</td></tr></tbody>
                                 </table>
                             </div>
                         </div>
@@ -222,7 +224,9 @@
                     <div class="flex justify-between items-center mb-6">
                         <h1 class="text-3xl font-bold text-white">Transações Recentes</h1>
                         <div class="flex items-center space-x-4">
+                            <label class="text-sm font-medium text-gray-400">De:</label>
                             <input type="date" id="startDateTrans" class="form-input p-2 rounded-md">
+                            <label class="text-sm font-medium text-gray-400">Até:</label>
                             <input type="date" id="endDateTrans" class="form-input p-2 rounded-md">
                             <button id="refreshTransactionsBtn" class="btn text-sm py-2 px-3">
                                 <svg class="h-4 w-4 inline-block mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001m0 0h-4.992m4.992 0L21 9.348M16.023 9.348A10.038 10.038 0 0112 19.5 10.038 10.038 0 012.98 9.348" /></svg>
@@ -481,11 +485,13 @@
             document.addEventListener('click', async (e) => {
                 if (e.target.id === 'logoutButton') this.logout();
                 if (e.target.id === 'closeModalBtn') document.getElementById('modal-container').innerHTML = '';
-                if (e.target.id === 'refreshDashboardBtn') this.fetchDashboardMetrics();
-                if (e.target.id === 'refreshTransactionsBtn') this.fetchTransactions();
                 
                 const sidebarLink = e.target.closest('.nav-link');
                 if (sidebarLink) this.navigateTo(sidebarLink.dataset.target);
+                
+                // Event listeners para os novos botões de atualização com filtro
+                if (e.target.id === 'refreshDashboardBtn') this.fetchDashboardMetrics();
+                if (e.target.id === 'refreshTransactionsBtn') this.fetchTransactions();
 
                 const copyBtn = e.target.closest('.copy-btn');
                 if (copyBtn) {
@@ -672,10 +678,10 @@
             if (contentContainer && this.templates[page]) {
                 contentContainer.innerHTML = this.templates[page]();
                 if (page === 'dashboard') {
-                    this.setupDateFilters();
+                    this.setupDateFilters('dashboard');
                     this.fetchDashboardMetrics();
                 } else if (page === 'transactions') {
-                    this.setupDateFilters();
+                    this.setupDateFilters('transactions');
                     this.fetchTransactions();
                 }
                 document.querySelectorAll('.nav-link').forEach(item => {
@@ -684,10 +690,10 @@
             }
         },
         
-        setupDateFilters() {
+        setupDateFilters(page) {
             const today = new Date().toISOString().split('T')[0];
-            const startDateEl = document.getElementById('startDate') || document.getElementById('startDateTrans');
-            const endDateEl = document.getElementById('endDate') || document.getElementById('endDateTrans');
+            const startDateEl = document.getElementById(page === 'dashboard' ? 'startDate' : 'startDateTrans');
+            const endDateEl = document.getElementById(page === 'dashboard' ? 'endDate' : 'endDateTrans');
             if (startDateEl) startDateEl.value = today;
             if (endDateEl) endDateEl.value = today;
         },
@@ -700,7 +706,7 @@
                 if (startDate && endDate) {
                     endpoint += `?startDate=${startDate}&endDate=${endDate}`;
                 }
-
+        
                 const metrics = await this.apiRequest(endpoint);
                 
                 document.getElementById('metric-clicks').textContent = metrics.total_clicks || '0';
@@ -708,7 +714,7 @@
                 document.getElementById('metric-paid').textContent = metrics.total_pix_paid || '0';
                 document.getElementById('metric-total-revenue').textContent = `R$ ${(metrics.total_revenue || 0).toFixed(2).replace('.', ',')}`;
                 document.getElementById('metric-paid-revenue').textContent = `R$ ${(metrics.paid_revenue || 0).toFixed(2).replace('.', ',')}`;
-
+        
                 const botsTableBody = document.getElementById('bots-performance-table');
                 if (metrics.bots_performance && metrics.bots_performance.length > 0) {
                     botsTableBody.innerHTML = metrics.bots_performance.map(b => `
@@ -720,9 +726,9 @@
                         </tr>
                     `).join('');
                 } else {
-                    botsTableBody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500">Nenhum dado de bot.</td></tr>';
+                    botsTableBody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500">Nenhum resultado encontrado.</td></tr>';
                 }
-
+        
                 const trafficTableBody = document.getElementById('traffic-by-state-table');
                 if (metrics.clicks_by_state && metrics.clicks_by_state.length > 0) {
                     trafficTableBody.innerHTML = metrics.clicks_by_state.map(s => `
@@ -732,7 +738,7 @@
                         </tr>
                     `).join('');
                 } else {
-                    trafficTableBody.innerHTML = '<tr><td colspan="2" class="text-center text-gray-500">Nenhum tráfego registrado por estado.</td></tr>';
+                    trafficTableBody.innerHTML = '<tr><td colspan="2" class="text-center text-gray-500">Nenhum resultado encontrado.</td></tr>';
                 }
                 
             } catch (e) {
@@ -740,7 +746,7 @@
                 this.showToast("Não foi possível carregar as métricas do painel.", 'error');
             }
         },
-
+        
         async fetchTransactions() {
             try {
                 const startDate = document.getElementById('startDateTrans').value;
