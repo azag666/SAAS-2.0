@@ -64,18 +64,18 @@
     <script>
     const App = {
         state: {
-            // ==================================================================
-            // CORREÇÃO APLICADA AQUI
-            // Coloque a URL do seu backend (Vercel) aqui.
-            // ==================================================================
-            API_BASE_URL: 'https://hottrack.vercel.app', // <<< MUDE AQUI SE NECESSÁRIO
-
+            API_BASE_URL: 'https://hottrack.vercel.app', // <<< CONFIRME SE ESTA É A URL CORRETA DO SEU BACKEND
             token: null,
             data: { pixels: [], bots: [], pressels: [], settings: {} },
             currentPage: 'pressels'
         },
 
         async init() {
+            // Se você estiver rodando o frontend localmente para testes, pode usar esta lógica:
+            if (window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')) {
+                this.state.API_BASE_URL = 'http://localhost:3000'; // Mude a porta se necessário
+            }
+            
             this.state.token = localStorage.getItem('hottrack_token');
             const appContainer = document.getElementById('app');
             appContainer.innerHTML = `<div class="flex h-screen items-center justify-center"><p>Carregando...</p></div>`;
@@ -330,6 +330,12 @@
                             <label class="text-sm font-medium text-gray-400 block mb-1">URL da Imagem</label>
                             <input name="flow_image_url" placeholder="https://exemplo.com/imagem.png" class="form-input w-full p-2 rounded-md" required>
                         </div>
+                        
+                        <div>
+                            <label class="text-sm font-medium text-gray-400 block mb-1">Valor do PIX (Ex: 9.90)</label>
+                            <input name="flow_pix_value" type="number" step="0.01" placeholder="9.90" class="form-input w-full p-2 rounded-md" required>
+                        </div>
+
                         <div>
                             <label class="text-sm font-medium text-gray-400 block mb-1">Texto da Mensagem</label>
                             <textarea name="flow_text" placeholder="Digite o texto que aparecerá junto com a imagem." class="form-input w-full p-2 rounded-md" rows="4" required></textarea>
@@ -455,7 +461,7 @@
                 button.innerHTML = 'Salvando...';
                 button.disabled = true;
 
-                const data = Object.fromEntries(new FormData(form).entries());
+                let data = Object.fromEntries(new FormData(form).entries());
                 try {
                     let shouldShowSuccess = true;
                     if (form.id === 'pixSettingsForm') {
@@ -489,7 +495,15 @@
                     }
                     else if (form.id === 'botFlowForm') {
                         const botId = form.dataset.botId;
-                        await this.apiRequest(`/api/bots/${botId}/flow`, 'POST', data);
+                        // ATUALIZADO: Converte o valor do PIX para centavos antes de enviar
+                        const pixValueFloat = parseFloat(data.flow_pix_value.replace(',', '.'));
+                        const payload = {
+                            ...data,
+                            flow_pix_value_cents: Math.round(pixValueFloat * 100)
+                        };
+                        delete payload.flow_pix_value; // Remove o campo antigo
+
+                        await this.apiRequest(`/api/bots/${botId}/flow`, 'POST', payload);
                         this.showToast('Fluxo salvo com sucesso!', 'success');
                         shouldShowSuccess = false;
                     }
@@ -630,6 +644,12 @@
                     form.elements.flow_text.value = flowData.flow_text || '';
                     form.elements.flow_button_pix_text.value = flowData.flow_button_pix_text || '✅ Gerar PIX';
                     form.elements.flow_button_check_text.value = flowData.flow_button_check_text || '🔎 Consultar PIX';
+                    // ATUALIZADO: Converte centavos para Reais para exibir no campo
+                    if (flowData.flow_pix_value_cents) {
+                        form.elements.flow_pix_value.value = (flowData.flow_pix_value_cents / 100).toFixed(2);
+                    } else {
+                        form.elements.flow_pix_value.value = '';
+                    }
                 }
             } catch (err) {
                  this.showToast('Não foi possível carregar os dados do fluxo.', 'error');
