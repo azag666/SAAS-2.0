@@ -641,13 +641,11 @@
                 const metrics = await this.apiRequest('/api/dashboard/metrics');
                 
                 // Atualiza os cards de métricas
-                document.getElementById('metric-clicks').textContent = metrics.total_clicks;
-                document.getElementById('metric-generated').textContent = metrics.total_pix_generated;
-                document.getElementById('metric-paid').textContent = metrics.total_pix_paid;
-                document.getElementById('metric-conversion').textContent = `${metrics.conversion_rate}%`;
-                document.getElementById('metric-total-revenue').textContent = `R$ ${metrics.total_revenue.toFixed(2).replace('.', ',')}`;
-                document.getElementById('metric-paid-revenue').textContent = `R$ ${metrics.paid_revenue.toFixed(2).replace('.', ',')}`;
-
+                document.getElementById('metric-clicks').textContent = metrics.total_clicks || '0';
+                document.getElementById('metric-generated').textContent = metrics.total_pix_generated || '0';
+                document.getElementById('metric-paid').textContent = metrics.total_pix_paid || '0';
+                document.getElementById('metric-total-revenue').textContent = `R$ ${(metrics.total_revenue || 0).toFixed(2).replace('.', ',')}`;
+                document.getElementById('metric-paid-revenue').textContent = `R$ ${(metrics.paid_revenue || 0).toFixed(2).replace('.', ',')}`;
 
                 // Renderiza a tabela de desempenho por Bot
                 const botsTableBody = document.getElementById('bots-performance-table');
@@ -655,9 +653,9 @@
                     botsTableBody.innerHTML = metrics.bots_performance.map(b => `
                         <tr class="hover:bg-slate-800/50">
                             <td>${b.bot_name}</td>
-                            <td>${b.total_clicks}</td>
-                            <td>${b.total_pix_paid}</td>
-                            <td>R$ ${b.paid_revenue.toFixed(2).replace('.', ',')}</td>
+                            <td>${b.total_clicks || '0'}</td>
+                            <td>${b.total_pix_paid || '0'}</td>
+                            <td>R$ ${(b.paid_revenue || 0).toFixed(2).replace('.', ',')}</td>
                         </tr>
                     `).join('');
                 } else {
@@ -678,6 +676,7 @@
                 }
                 
             } catch (e) {
+                console.error("Erro ao carregar métricas do painel:", e);
                 this.showToast("Não foi possível carregar as métricas do painel.", 'error');
             }
         },
