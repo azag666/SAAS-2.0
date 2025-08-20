@@ -223,7 +223,7 @@
                 <div class="animate-fade-in">
                     <div class="flex justify-between items-center mb-6">
                         <h1 class="text-3xl font-bold text-white">Transações Recentes</h1>
-                        <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
                             <label class="text-sm font-medium text-gray-400">De:</label>
                             <input type="date" id="startDateTrans" class="form-input p-2 rounded-md">
                             <label class="text-sm font-medium text-gray-400">Até:</label>
@@ -489,7 +489,6 @@
                 const sidebarLink = e.target.closest('.nav-link');
                 if (sidebarLink) this.navigateTo(sidebarLink.dataset.target);
                 
-                // Event listeners para os novos botões de atualização com filtro
                 if (e.target.id === 'refreshDashboardBtn') this.fetchDashboardMetrics();
                 if (e.target.id === 'refreshTransactionsBtn') this.fetchTransactions();
 
@@ -694,8 +693,14 @@
             const today = new Date().toISOString().split('T')[0];
             const startDateEl = document.getElementById(page === 'dashboard' ? 'startDate' : 'startDateTrans');
             const endDateEl = document.getElementById(page === 'dashboard' ? 'endDate' : 'endDateTrans');
-            if (startDateEl) startDateEl.value = today;
-            if (endDateEl) endDateEl.value = today;
+            if (startDateEl) {
+                startDateEl.value = today;
+                startDateEl.addEventListener('change', () => this.fetchDashboardMetrics());
+            }
+            if (endDateEl) {
+                endDateEl.value = today;
+                endDateEl.addEventListener('change', () => this.fetchDashboardMetrics());
+            }
         },
 
         async fetchDashboardMetrics() {
@@ -774,7 +779,7 @@
                         `;
                     }).join('');
                 } else {
-                    transactionsTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500">Nenhuma transação encontrada.</td></tr>';
+                    transactionsTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500">Nenhum resultado encontrado.</td></tr>';
                 }
             } catch (e) {
                 console.error("Erro ao carregar transações:", e);
