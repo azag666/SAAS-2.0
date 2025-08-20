@@ -65,16 +65,15 @@
     <script>
     const App = {
         state: {
-            API_BASE_URL: 'https://hottrack.vercel.app', // <<< CONFIRME SE ESTA É A URL CORRETA DO SEU BACKEND
+            API_BASE_URL: 'https://hottrack.vercel.app',
             token: null,
             data: { pixels: [], bots: [], pressels: [], settings: {} },
-            currentPage: 'dashboard' // Define o dashboard como página inicial
+            currentPage: 'dashboard'
         },
 
         async init() {
-            // Se você estiver rodando o frontend localmente para testes, pode usar esta lógica:
             if (window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')) {
-                this.state.API_BASE_URL = 'http://localhost:3000'; // Mude a porta se necessário
+                this.state.API_BASE_URL = 'http://localhost:3000';
             }
             
             this.state.token = localStorage.getItem('hottrack_token');
