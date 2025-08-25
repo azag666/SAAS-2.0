@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HotTrack SAAS</title>
 
-    <!-- PWA: Adicionado o Manifesto e a cor do tema -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#020617"/>
 
@@ -727,15 +726,107 @@
         },
 
         generatePresselCode(pressel) {
-            // ... (código da função generatePresselCode aqui)
+            const { pixels, bots, settings } = this.state.data;
+            const bot = bots.find(b => b.id === pressel.bot_id);
+            const presselPixels = pressel.pixel_ids
+                .map(pid => pixels.find(p => p.id === pid))
+                .filter(Boolean) 
+                .map(p => ({ id: p.pixel_id }));
+
+            const htmlContent = `
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VIP</title>
+    <script>
+        const API_BASE_URL = '${this.state.API_BASE_URL}';
+        const SELLER_API_KEY = '${settings.api_key}';
+        const PRESSEL_ID = ${pressel.id};
+        const TELEGRAM_USERNAME = '${bot.bot_name}';
+        const WHITE_PAGE_URL = '${pressel.white_page_url}';
+        const PIXELS_TO_TRACK = ${JSON.stringify(presselPixels, null, 2)};
+        
+        const isBot = () => /bot|facebook|crawler|spider|preview/i.test(navigator.userAgent);
+        const isMobile = () => /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+
+        async function handleRedirect() {
+            if (isBot() || !isMobile()) {
+                window.location.replace(WHITE_PAGE_URL);
+                return;
+            }
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const response = await fetch(\`\${API_BASE_URL}/api/registerClick\`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        sellerApiKey: SELLER_API_KEY,
+                        presselId: PRESSEL_ID,
+                        referer: document.referrer || null,
+                        fbclid: params.get("fbclid") || null,
+                        fbp: document.cookie.match(/_fbp=([^;]+)/)?.[1] || null,
+                        fbc: document.cookie.match(/_fbc=([^;]+)/)?.[1] || null,
+                        user_agent: navigator.userAgent
+                    })
+                });
+                const data = await response.json();
+                if (response.ok && data.status === "success") {
+                    window.location.replace(\`https://t.me/\${TELEGRAM_USERNAME}?start=\${data.click_id}\`);
+                } else {
+                    window.location.replace(WHITE_PAGE_URL);
+                }
+            } catch (error) {
+                window.location.replace(WHITE_PAGE_URL);
+            }
+        }
+        
+        // ALTERAÇÃO APLICADA AQUI: Adiciona um atraso para permitir que o Pixel crie os cookies.
+        setTimeout(handleRedirect, 500);
+    <\/script>
+    <script>
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src='https://connect.facebook.net/en_US/fbevents.js';s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script');
+        PIXELS_TO_TRACK.forEach(p => { fbq('init', p.id); });
+        fbq('track', 'PageView');
+    <\/script>
+    ${presselPixels.map(p => `<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${p.id}&ev=PageView&noscript=1"/></noscript>`).join('\n    ')}
+</head>
+<body><p>Redirecionando...</p></body>
+</html>`;
+
+            const modalContent = `
+                <p class="text-sm text-gray-400 mb-4">Copie e cole este código no HTML da sua página de vendas.</p>
+                <div class="relative">
+                    <textarea id="pressel-code-textarea" readonly class="form-input w-full p-3 rounded-md font-mono text-xs" rows="15">${htmlContent.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</textarea>
+                    <button id="copy-pressel-code-btn" class="absolute top-2 right-2 btn text-xs py-1 px-2">Copiar</button>
+                </div>
+            `;
+            document.getElementById('modal-container').innerHTML = this.templates.modal(`Código da Pressel: ${pressel.name}`, modalContent);
+
+            document.getElementById('copy-pressel-code-btn').addEventListener('click', (e) => {
+                const textarea = document.getElementById('pressel-code-textarea');
+                navigator.clipboard.writeText(htmlContent).then(() => {
+                    const btn = e.target;
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Copiado!';
+                    setTimeout(() => { btn.textContent = originalText; }, 2000);
+                });
+            });
         },
 
+
         showToast(message, type = 'success') {
-            // ... (código da função showToast aqui)
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
+            toast.className = `fixed bottom-5 right-5 ${bgColor} text-white py-2 px-4 rounded-lg shadow-lg animate-fade-in`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
         },
 
         async openBotFlowModal(bot) {
-            // ... (código da função openBotFlowModal aqui)
+            this.showToast('Funcionalidade de fluxo de bot em desenvolvimento.', 'info');
         }
     };
 
@@ -749,7 +840,6 @@
     });
     </script>
 
-    <!-- PWA: Adicionado o script para registrar o Service Worker -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
