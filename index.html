@@ -421,13 +421,13 @@
                         </div>
                         <div class="card p-6 rounded-lg">
                             <h2 class="text-xl font-semibold text-white mb-4">Top Posicionamentos</h2>
-                            <div id="top-placements-container" class="overflow-x-auto"><table class="table-custom w-full text-sm"><thead><tr><th>Posicionamento</th><th>Cliques</th></tr></thead><tbody id="top-placements-table"><tr><td colspan="2">Carregando...</td></tr></tbody></table></div>
+                            <div id="top-placements-container" class="overflow-x-auto max-h-60"><table class="table-custom w-full text-sm"><thead><tr><th>Posicionamento</th><th>Cliques</th></tr></thead><tbody id="top-placements-table"><tr><td colspan="2">Carregando...</td></tr></tbody></table></div>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
                         <div class="card p-6 rounded-lg lg:col-span-2"><h2 class="text-xl font-semibold text-white mb-4">Desempenho por Bot</h2><div id="bots-performance-table-container" class="overflow-x-auto"><table class="table-custom w-full text-sm"><thead><tr><th>Bot</th><th>Cliques</th><th>Vendas</th><th>Faturamento</th></tr></thead><tbody id="bots-performance-table"><tr><td colspan="4">Carregando...</td></tr></tbody></table></div></div>
-                        <div class="card p-6 rounded-lg"><h2 class="text-xl font-semibold text-white mb-4">Tráfego por Estado</h2><div id="traffic-by-state-table-container" class="overflow-x-auto"><table class="table-custom w-full text-sm"><thead><tr><th>Estado</th><th>Cliques</th></tr></thead><tbody id="traffic-by-state-table"><tr><td colspan="2">Carregando...</td></tr></tbody></table></div></div>
+                        <div class="card p-6 rounded-lg"><h2 class="text-xl font-semibold text-white mb-4">Tráfego por Estado</h2><div id="traffic-by-state-table-container" class="overflow-x-auto max-h-96"><table class="table-custom w-full text-sm"><thead><tr><th>Estado</th><th>Cliques</th></tr></thead><tbody id="traffic-by-state-table"><tr><td colspan="2">Carregando...</td></tr></tbody></table></div></div>
                         
                     </div>
                      <div class="grid grid-cols-1 gap-8 lg:grid-cols-3 mt-8">
@@ -1428,7 +1428,6 @@
                     trafficTableBody.innerHTML = '<tr><td colspan="2" class="text-center text-gray-500 py-8">Nenhum tráfego registrado.</td></tr>';
                 }
 
-                // ** ATUALIZAÇÃO PARA NOVOS DADOS **
                 const trafficSourceContainer = document.getElementById('traffic-source-container');
                 if (trafficSourceContainer && metrics.traffic_source && metrics.traffic_source.length > 0) {
                     trafficSourceContainer.innerHTML = metrics.traffic_source.map(s => `<div class="flex justify-between text-sm"><span class="text-gray-400">${s.source}</span><span class="font-medium text-white">${s.clicks} cliques</span></div>`).join('');
@@ -1561,7 +1560,7 @@
                     break;
                 case 'custom':
                     startDate = new Date(customStartDate + 'T00:00:00');
-                    endDate = new Date(customEndDate + 'T23:59:59');
+                    endDate = new Date(customEndDate + 'T23:59:59'); // Inclui o dia todo
                     break;
                 case 'all':
                 default:
