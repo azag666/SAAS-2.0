@@ -1444,7 +1444,7 @@
 
                 const topPlacementsTable = document.getElementById('top-placements-table');
                 if (topPlacementsTable && metrics.top_placements && metrics.top_placements.length > 0) {
-                    topPlacementsTable.innerHTML = metrics.top_placements.map(p => `<tr class="hover:bg-slate-800/50"><td>${p.placement}</td><td>${p.clicks}</td></tr>`).join('');
+                    topPlacementsTable.innerHTML = metrics.top_placements.map(p => `<tr class="hover:bg-slate-800/50"><td class="truncate" title="${p.placement}">${p.placement}</td><td>${p.clicks}</td></tr>`).join('');
                 } else if (topPlacementsTable) {
                     topPlacementsTable.innerHTML = '<tr><td colspan="2" class="text-center text-gray-500 py-8">Nenhum posicionamento.</td></tr>';
                 }
