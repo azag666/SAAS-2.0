@@ -127,7 +127,7 @@
             border-radius: 0 4px 4px 0;
             transition: all 0.3s ease;
         }
-        .nav-link:hover {
+        .nav-link:hover:not(.nav-link-disabled) {
             background-color: rgba(56, 189, 248, 0.1);
             color: var(--text-primary);
         }
@@ -138,6 +138,12 @@
         }
         .nav-link.active:before {
             height: 60%;
+        }
+        .nav-link-disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+            background-color: transparent !important;
+            color: var(--text-secondary) !important;
         }
 
         .modal { display: none; }
@@ -332,11 +338,11 @@
                             <div class="h-px bg-slate-700 my-2"></div>
                             <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">AUTOMAÇÃO</p>
                             <div data-target="bots" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V5a1 1 0 00-1.447-.894l-4 2A1 1 0 0011 7v10zM4 17a1 1 0 001.447.894l4-2A1 1 0 0010 15V5a1 1 0 00-1.447-.894l-4 2A1 1 0 004 7v10z" /></svg>Gerenciar Bots</div>
-                            <div data-target="flows" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12 4a1 1 0 100-2H7a1 1 0 000 2h5zM3 8a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>Automações</div>
+                            <div data-target="flows" class="nav-link nav-link-disabled"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12 4a1 1 0 100-2H7a1 1 0 000 2h5zM3 8a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>Automações<span class="text-xs text-red-500 font-bold ml-auto bg-red-500/20 px-1.5 py-0.5 rounded">EM BREVE</span></div>
 
                             <div class="h-px bg-slate-700 my-2"></div>
                             <p class="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">FERRAMENTAS</p>
-                            <div data-target="dispatches" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg>Disparos</div>
+                            <div data-target="dispatches" class="nav-link nav-link-disabled"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg>Disparos<span class="text-xs text-red-500 font-bold ml-auto bg-red-500/20 px-1.5 py-0.5 rounded">EM BREVE</span></div>
                             <div data-target="checkouts" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" /><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd" /></svg>Criador de Checkout</div>
                             <div data-target="pressels" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>Criador de Pressel</div>
                             <div data-target="pixels" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h10a3 3 0 013 3v5a.997.997 0 01-.293-.707zM5 4a1 1 0 00-1 1v.01L8 9.01l4-4.002V5a1 1 0 00-1-1H5z" clip-rule="evenodd" /></svg>Gerenciar Pixels</div>
@@ -403,6 +409,22 @@
                         <h2 class="text-xl font-semibold text-white mb-4">Desempenho de Faturamento</h2>
                         <canvas id="revenueChart" height="100"></canvas>
                     </div>
+                    
+                    <div class="grid grid-cols-1 gap-8 lg:grid-cols-3 mb-8">
+                        <div class="card p-6 rounded-lg">
+                            <h2 class="text-xl font-semibold text-white mb-4">Origem do Tráfego</h2>
+                            <div id="traffic-source-container" class="space-y-2"><p class="text-gray-500 text-sm">Carregando...</p></div>
+                        </div>
+                        <div class="card p-6 rounded-lg">
+                            <h2 class="text-xl font-semibold text-white mb-4">Sistema Operacional</h2>
+                            <div id="device-os-container" class="space-y-2"><p class="text-gray-500 text-sm">Carregando...</p></div>
+                        </div>
+                        <div class="card p-6 rounded-lg">
+                            <h2 class="text-xl font-semibold text-white mb-4">Top Posicionamentos</h2>
+                            <div id="top-placements-container" class="overflow-x-auto"><table class="table-custom w-full text-sm"><thead><tr><th>Posicionamento</th><th>Cliques</th></tr></thead><tbody id="top-placements-table"><tr><td colspan="2">Carregando...</td></tr></tbody></table></div>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
                         <div class="card p-6 rounded-lg lg:col-span-2"><h2 class="text-xl font-semibold text-white mb-4">Desempenho por Bot</h2><div id="bots-performance-table-container" class="overflow-x-auto"><table class="table-custom w-full text-sm"><thead><tr><th>Bot</th><th>Cliques</th><th>Vendas</th><th>Faturamento</th></tr></thead><tbody id="bots-performance-table"><tr><td colspan="4">Carregando...</td></tr></tbody></table></div></div>
                         <div class="card p-6 rounded-lg"><h2 class="text-xl font-semibold text-white mb-4">Tráfego por Estado</h2><div id="traffic-by-state-table-container" class="overflow-x-auto"><table class="table-custom w-full text-sm"><thead><tr><th>Estado</th><th>Cliques</th></tr></thead><tbody id="traffic-by-state-table"><tr><td colspan="2">Carregando...</td></tr></tbody></table></div></div>
@@ -855,8 +877,17 @@
 
                 if (e.target.id === 'logoutButton') this.logout();
                 if (e.target.closest('#closeModalBtn')) document.getElementById('modal-container').innerHTML = '';
+                
                 const sidebarLink = e.target.closest('.nav-link');
-                if (sidebarLink && sidebarLink.dataset.target) this.navigateTo(sidebarLink.dataset.target);
+                if (sidebarLink && sidebarLink.dataset.target) {
+                    if (sidebarLink.classList.contains('nav-link-disabled')) {
+                        e.preventDefault();
+                        this.showToast('Esta funcionalidade será liberada em breve!', 'warning');
+                        return;
+                    }
+                    this.navigateTo(sidebarLink.dataset.target);
+                }
+
                 const copyBtn = e.target.closest('.copy-btn');
                 if (copyBtn) {
                     const targetInput = document.querySelector(copyBtn.dataset.target);
@@ -1396,7 +1427,29 @@
                 } else if(trafficTableBody){
                     trafficTableBody.innerHTML = '<tr><td colspan="2" class="text-center text-gray-500 py-8">Nenhum tráfego registrado.</td></tr>';
                 }
-                
+
+                // ** ATUALIZAÇÃO PARA NOVOS DADOS **
+                const trafficSourceContainer = document.getElementById('traffic-source-container');
+                if (trafficSourceContainer && metrics.traffic_source && metrics.traffic_source.length > 0) {
+                    trafficSourceContainer.innerHTML = metrics.traffic_source.map(s => `<div class="flex justify-between text-sm"><span class="text-gray-400">${s.source}</span><span class="font-medium text-white">${s.clicks} cliques</span></div>`).join('');
+                } else if (trafficSourceContainer) {
+                    trafficSourceContainer.innerHTML = '<p class="text-gray-500 text-sm">Nenhum dado de origem.</p>';
+                }
+
+                const deviceOsContainer = document.getElementById('device-os-container');
+                if (deviceOsContainer && metrics.device_os && metrics.device_os.length > 0) {
+                    deviceOsContainer.innerHTML = metrics.device_os.map(d => `<div class="flex justify-between text-sm"><span class="text-gray-400">${d.os}</span><span class="font-medium text-white">${d.clicks} cliques</span></div>`).join('');
+                } else if (deviceOsContainer) {
+                    deviceOsContainer.innerHTML = '<p class="text-gray-500 text-sm">Nenhum dado de dispositivo.</p>';
+                }
+
+                const topPlacementsTable = document.getElementById('top-placements-table');
+                if (topPlacementsTable && metrics.top_placements && metrics.top_placements.length > 0) {
+                    topPlacementsTable.innerHTML = metrics.top_placements.map(p => `<tr class="hover:bg-slate-800/50"><td>${p.placement}</td><td>${p.clicks}</td></tr>`).join('');
+                } else if (topPlacementsTable) {
+                    topPlacementsTable.innerHTML = '<tr><td colspan="2" class="text-center text-gray-500 py-8">Nenhum posicionamento.</td></tr>';
+                }
+
                 this.renderRevenueChart();
                 this.fetchAchievementsAndRanking();
             } catch (e) { console.error("Erro ao carregar métricas do painel:", e); }
@@ -1455,12 +1508,11 @@
 
             const { period, startDate, endDate } = this.state.dateFilter;
             let filteredTransactions = this.state.data.transactions;
-
+            
             if (period !== 'all' && startDate && endDate) {
-                const start = new Date(`${startDate}T00:00:00.000Z`).getTime();
-                const end = new Date(`${endDate}T23:59:59.999Z`).getTime();
-                
-                filteredTransactions = this.state.data.transactions.filter(t => {
+                 const start = new Date(startDate).getTime();
+                 const end = new Date(endDate).getTime();
+                 filteredTransactions = this.state.data.transactions.filter(t => {
                     const transactionDate = new Date(t.created_at).getTime();
                     return transactionDate >= start && transactionDate <= end;
                 });
@@ -1471,7 +1523,7 @@
                     const statusClass = t.status === 'paid' ? 'text-green-400 bg-green-500/10' : 'text-yellow-400 bg-yellow-500/10';
                     const statusText = t.status === 'paid' ? 'Pago' : 'Pendente';
                     const formattedValue = `R$ ${parseFloat(t.pix_value).toFixed(2).replace('.', ',')}`;
-                    const formattedDate = new Date(t.created_at).toLocaleString('pt-BR');
+                    const formattedDate = new Date(t.created_at).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
                     const sourceName = (t.source_name === 'Checkout' || !t.source_name) ? 'Disparo' : t.source_name;
                     return `<tr class="hover:bg-slate-800/50">
                                 <td><span class="px-2 py-1 rounded-full text-xs font-medium ${statusClass}">${statusText}</span></td>
@@ -1484,32 +1536,32 @@
         },
 
         handleFilterChange(page, period, customStartDate, customEndDate) {
-            const now = new Date();
             let startDate, endDate;
-            const today = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
             switch(period) {
                 case 'today': 
-                    startDate = endDate = today.toISOString().split('T')[0];
+                    startDate = today;
+                    endDate = today;
                     break;
                 case 'yesterday':
-                    const yesterday = new Date(today);
-                    yesterday.setUTCDate(today.getUTCDate() - 1);
-                    startDate = endDate = yesterday.toISOString().split('T')[0];
+                    startDate = new Date(today);
+                    startDate.setDate(today.getDate() - 1);
+                    endDate = startDate;
                     break;
                 case 'last7days':
-                    endDate = today.toISOString().split('T')[0];
-                    const sevenDaysAgo = new Date(today);
-                    sevenDaysAgo.setUTCDate(today.getUTCDate() - 6);
-                    startDate = sevenDaysAgo.toISOString().split('T')[0];
+                    endDate = today;
+                    startDate = new Date(today);
+                    startDate.setDate(today.getDate() - 6);
                     break;
                 case 'thisMonth':
-                    startDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 1)).toISOString().split('T')[0];
-                    endDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth() + 1, 0)).toISOString().split('T')[0];
+                    startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
                     break;
                 case 'custom':
-                    startDate = customStartDate;
-                    endDate = customEndDate;
+                    startDate = new Date(customStartDate + 'T00:00:00');
+                    endDate = new Date(customEndDate + 'T23:59:59');
                     break;
                 case 'all':
                 default:
@@ -1517,7 +1569,17 @@
                     endDate = null;
             }
 
-            this.state.dateFilter = { period, startDate, endDate };
+            let finalStartDate = startDate ? startDate.toISOString() : null;
+            let finalEndDate = endDate ? endDate.toISOString() : null;
+
+            if (startDate && endDate && period !== 'custom') {
+                 const startOfDay = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0, 0);
+                 const endOfDay = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999);
+                 finalStartDate = startOfDay.toISOString();
+                 finalEndDate = endOfDay.toISOString();
+            }
+            
+            this.state.dateFilter = { period, startDate: finalStartDate, endDate: finalEndDate };
             
             const filterContainer = document.getElementById(`${page}-date-filter`);
             if (filterContainer) {
